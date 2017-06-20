@@ -1,0 +1,4 @@
+bazel-*
+build/
+quest-island*.tgz
+*.app
