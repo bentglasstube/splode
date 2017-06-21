@@ -2,15 +2,15 @@
 
 #include <cmath>
 
-Ship::Ship(float x, float y)  : x_(x), y_(y), vx_(0), vy_(0), angle_(0), engine_(false), thrust_(0) {}
+Ship::Ship(double x, double y)  : x_(x), y_(y), vx_(0), vy_(0), angle_(-kPi / 2), engine_(false), thrust_(0) {}
 
 bool Ship::update(Audio& audio, unsigned int elapsed) {
-  float ax = 0;
-  float ay = GRAVITY;
+  double ax = 0;
+  double ay = kGravity;
 
   if (engine_) {
-    ax -= 2 * GRAVITY * cos(angle_);
-    ay -= 2 * GRAVITY * sin(angle_);
+    ax += kEngineFactor * kGravity * cos(angle_);
+    ay += kEngineFactor * kGravity * sin(angle_);
 
     audio.play_sample("thrust.wav");
     // TODO reduce fuel levels
@@ -18,7 +18,7 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
 
   // TODO set cap on accelleration
 
-  angle_ += ROTATION_SPEED * thrust_;
+  angle_ += kRotationSpeed * thrust_;
 
   // TODO check for flips
 
@@ -31,28 +31,32 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
   return true;
 }
 
-#define POLAR(a, r) (x + cos(angle_ + a) * r), (y + sin(angle_ + a) * r)
-#define PI    3.14159265359
-
 void Ship::draw(Graphics& graphics) const {
   // TODO account for camera
 
-  const float x = x_ + cos(angle_) * SHIP_SIZE;
-  const float y = y_ - sin(angle_) * SHIP_SIZE;
-
-  graphics.draw_line(POLAR(PI / -2, SHIP_SIZE), POLAR(0, 2 * SHIP_SIZE), 0x00ffffff);
-  graphics.draw_line(POLAR(PI /  2, SHIP_SIZE), POLAR(0, 2 * SHIP_SIZE), 0x00ffffff);
-  graphics.draw_line(POLAR(PI / -2, SHIP_SIZE), POLAR(PI / 2, SHIP_SIZE), 0x00ffffff);
-
-  graphics.draw_circle(x_, y_, SHIP_SIZE, 0xffffff44, false);
-
   if (engine_) {
-    graphics.draw_line(POLAR(PI /  2, SHIP_SIZE / 2), POLAR(PI, SHIP_SIZE), 0xff0000ff);
-    graphics.draw_line(POLAR(PI / -2, SHIP_SIZE / 2), POLAR(PI, SHIP_SIZE), 0xff0000ff);
+    const Point a = coords(kPi / 2, kShipSize / 2);
+    const Point b = coords(kPi, kShipSize);
+    const Point c = coords(-kPi / 2, kShipSize / 2);
+
+    graphics.draw_line(a.x, a.y, b.x, b.y, 0xff0000ff);
+    graphics.draw_line(c.x, c.y, b.x, b.y, 0xff0000ff);
   }
+
+  const Point d = coords(0, kShipSize * 2);
+  const Point e = coords(kPi / 2, kShipSize);
+  const Point f = coords(-kPi / 2, kShipSize);
+
+  graphics.draw_line(d.x, d.y, e.x, e.y, 0x00ffffff);
+  graphics.draw_line(e.x, e.y, f.x, f.y, 0x00ffffff);
+  graphics.draw_line(f.x, f.y, d.x, d.y, 0x00ffffff);
 }
 
 void Ship::set_engines(bool main, bool left, bool right) {
   engine_ = main;
   thrust_ = 0 + (left ? -1 : 0) + (right ? 1 : 0);
+}
+
+Ship::Point Ship::coords(double angle, double radius) const {
+  return { x_ + cos(angle_ + angle) * radius, y_ + sin(angle_ + angle) * radius };
 }
