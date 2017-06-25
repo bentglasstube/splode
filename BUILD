@@ -9,7 +9,27 @@ cc_library(
         "@libgam//:graphics",
         "@libgam//:screen",
         "@libgam//:text",
+        ":level",
         ":ship",
+    ],
+)
+
+cc_library(
+    name = "geometry",
+    srcs = ["geometry.cc"],
+    hdrs = ["geometry.h"],
+    deps = [
+        "@libgam//:graphics",
+    ],
+)
+
+cc_library(
+    name = "level",
+    srcs = ["level.cc"],
+    hdrs = ["level.h"],
+    deps = [
+        "@libgam//:graphics",
+        ":geometry",
     ],
 )
 
@@ -20,6 +40,7 @@ cc_library(
     deps = [
         "@libgam//:audio",
         "@libgam//:graphics",
+        ":geometry",
     ],
 )
 

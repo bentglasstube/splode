@@ -2,18 +2,18 @@
 
 #include <cmath>
 
-Ship::Ship(double x, double y)  : x_(x), y_(y), vx_(0), vy_(0), angle_(-kPi / 2), engine_(false), thrust_(0) {}
+Ship::Ship(const Point& pos, double fuel)  : x_(pos.x), y_(pos.y), vx_(0), vy_(0), angle_(-kPi / 2), fuel_(fuel), engine_(false), thrust_(0) {}
 
 bool Ship::update(Audio& audio, unsigned int elapsed) {
   double ax = 0;
   double ay = kGravity;
 
-  if (engine_) {
+  if (engine_ && fuel_ > 0) {
     ax += kEngineFactor * kGravity * cos(angle_);
     ay += kEngineFactor * kGravity * sin(angle_);
 
     audio.play_sample("thrust.wav");
-    // TODO reduce fuel levels
+    fuel_ -= elapsed / 1000.0f;
   }
 
   // TODO set cap on accelleration
@@ -32,24 +32,10 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
 }
 
 void Ship::draw(Graphics& graphics) const {
-  // TODO account for camera
-
-  if (engine_) {
-    const Point a = coords(kPi / 2, kShipSize / 2);
-    const Point b = coords(kPi, kShipSize);
-    const Point c = coords(-kPi / 2, kShipSize / 2);
-
-    graphics.draw_line(a.x, a.y, b.x, b.y, 0xff0000ff);
-    graphics.draw_line(c.x, c.y, b.x, b.y, 0xff0000ff);
+  if (engine_ && fuel_ > 0) {
+    engine().draw(graphics, 0xff0000ff);
   }
-
-  const Point d = coords(0, kShipSize * 2);
-  const Point e = coords(kPi / 2, kShipSize);
-  const Point f = coords(-kPi / 2, kShipSize);
-
-  graphics.draw_line(d.x, d.y, e.x, e.y, 0x00ffffff);
-  graphics.draw_line(e.x, e.y, f.x, f.y, 0x00ffffff);
-  graphics.draw_line(f.x, f.y, d.x, d.y, 0x00ffffff);
+  hull().draw(graphics, 0x00ffffff);
 }
 
 void Ship::set_engines(bool main, bool left, bool right) {
@@ -57,6 +43,31 @@ void Ship::set_engines(bool main, bool left, bool right) {
   thrust_ = 0 + (left ? -1 : 0) + (right ? 1 : 0);
 }
 
-Ship::Point Ship::coords(double angle, double radius) const {
+Point Ship::coords(double angle, double radius) const {
   return { x_ + cos(angle_ + angle) * radius, y_ + sin(angle_ + angle) * radius };
+}
+
+PolyLine Ship::engine() const {
+  PolyLine p;
+
+  p.add(coords(kPi / 2, kShipSize / 2));
+  p.add(coords(kPi, kShipSize));
+  p.add(coords(-kPi / 2, kShipSize / 2));
+
+  return p;
+}
+
+PolyLine Ship::hull() const {
+  PolyLine p;
+
+  p.add(coords(0, kShipSize * 3));
+  p.add(coords(kPi / 2, kShipSize));
+  p.add(coords(-kPi / 2, kShipSize));
+  p.close();
+
+  return p;
+}
+
+double Ship::get_fuel() const {
+  return fuel_;
 }

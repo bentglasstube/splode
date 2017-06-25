@@ -1,0 +1,22 @@
+#pragma once
+
+#include <string>
+#include <vector>
+
+#include "graphics.h"
+#include "geometry.h"
+
+class Level {
+  public:
+    Level(const std::string& data);
+    void draw(Graphics& graphics) const;
+
+    Point get_start() const;
+    int get_fuel() const;
+
+  private:
+    std::string name_;
+    int fuel_;
+    Point start_, pad_;
+    std::vector<PolyLine> terrain_;
+};

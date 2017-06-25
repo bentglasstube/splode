@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Splode Level Viewer</title>
+    <style>
+      canvas {
+        display: block;
+        background: #000;
+      }
+      p {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        font-weight: bold;
+        font-family: monospace;
+      }
+      div {
+        display: inline-block;
+        margin: 0.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      window.onload = function() {
+        var drawLevel = function(level) {
+          var div = document.createElement('div');
+
+          var p = document.createElement('p');
+          p.appendChild(document.createTextNode(level.title));
+          div.appendChild(p);
+
+          var canvas = document.createElement('canvas');
+          canvas.setAttribute('width', 256);
+          canvas.setAttribute('height', 256);
+          div.appendChild(canvas);
+
+          document.body.appendChild(div);
+
+          var c = canvas.getContext('2d');
+
+          for (var i = 0; i < level.terrain.length; ++i) {
+            var segment = level.terrain[i];
+
+            c.beginPath();
+            c.moveTo(segment[0].x, 256 - segment[0].y);
+
+            for (var j = 1; j < segment.length; ++j) {
+              c.lineTo(segment[j].x, 256 - segment[j].y);
+            }
+
+            c.strokeStyle = '#00ff00';
+            c.stroke();
+          }
+
+          c.beginPath();
+          c.moveTo(level.start.x - 2.5, 256 - level.start.y);
+          c.lineTo(level.start.x, 256 - level.start.y - 7.5);
+          c.lineTo(level.start.x + 2.5, 256 - level.start.y);
+          c.lineTo(level.start.x - 2.5, 256 - level.start.y);
+          c.strokeStyle = '#00ffff';
+          c.stroke();
+
+          c.beginPath();
+          c.rect(level.pad.x - 7.5, 256 - level.pad.y, 15, 2.5);
+          c.strokeStyle = '#ffffff';
+          c.stroke();
+
+          c.beginPath();
+          c.rect(5, 5, level.fuel * 5, 2.5);
+          c.strokeStyle = '#ffff00';
+          c.stroke();
+        }
+
+        var parseLevel = function(data) {
+          var level = {
+            title: '',
+            fuel: 0,
+            pad: { x: 0, y: 0 },
+            start: { x: 0, y: 0},
+            terrain: [],
+          };
+
+          var offset = data.charCodeAt(0) + 1;
+          level.title = data.substring(1, offset);
+
+          var readByte = function() {
+            return data.charCodeAt(offset++);
+          };
+
+          var readPoint = function() {
+            var x = readByte();
+            var y = readByte();
+            return { x: x, y: y };
+          }
+
+          level.fuel = readByte();
+          level.start = readPoint();
+          level.pad = readPoint();
+
+          var segments = readByte();
+
+          for (var i = 0; i < segments; ++i) {
+            var length = readByte()
+            var segment = [];
+            for (var j = 0; j < length; ++j) {
+              segment.push(readPoint());
+            }
+            level.terrain.push(segment);
+          }
+
+          return level;
+        }
+
+        var data = [
+          "BlNlY3JldBAQKPAXBCAEGxDjOO9MT0zvYO9kR5BTmO+448RLxOPQ4+yb5N/8y/gX6Bfkb9iX0Ae4F7RjoFecF4wnTAtMKzQvLGMcUxgPAhgPBBsEGHcgvzSTGHcEoK+cg7CPoK8=",
+          "CFRyYWluaW5nEMDQYIABCQAgMEBQgHCAgHCgoNCQ8GD/UA==",
+          "CE1vdW50YWluEMDQSKABCwAQMCBAoFCgcHCQgKBQsGDQcPBA/zA=",
+          "ClR3aW4gUGVha3MQ4KA4IAELAHAgYDAgQCBgQHBwkGCgsMCA4HD/cA==",
+          "BkNyYXRlchAQQMggAQsAECAgQEBgcICQoKCwoMAg0CDg4P/w",
+          "BkNhdmVybhDggDgwARQA4BDgQNBQsECgIJAQcBBgIEAwMEAwYEBwUHBwYJBwoKCQ0FDwQP9A",
+          "DUFzdGVyb2lkIEJlbHQQiOCIEAQIACAgEFAgcBCwENAg4CD/IAcggDCAUGBQUEBAEGAggAhQkGCggLCQoIBwcGBQcFCQCZBwoIDAkOCA8HDgUNBAsFCQcA==",
+          "BUNoYXNtEIDwyBACEgDgYNBwsGCQQIAgYCBAMCBQENAQ4CDgYNBwsICgkJCwoND/4AmAoJCA0GDQQMAwUFBgcHCAgKA=",
+          "BlR1bm5lbBAw4NAQASAA0DDAUNCAsKDAwLCwkJCggJBggECAMHAgUDAwUCBwMKAgwBDgEPAg8DDgQMBQoEBwUGBAUFBwYKBwwHDgwP/Q",
+          "BlNwaXJhbBAg4IBfAiAA3xjPIJ8YVyAnMBdQD3gXqA/IB9gX6C/wR/hv8J/Yt8C/oMeAv3C3aJ9wb3hfiF+Qb5iHqJfAj8h/2GfQR7g3C7g3kEdoP1BPQGcwhzivSMdY33DveP8=",
+          "BlNwbGl0cxDQ4MAXAhkAxyjXSNdYx0iXWHc4Vzg3WBeIN8h32GfYV7gnuBfIF+hX6IfIl5hniIeol7i3yMf/1w5ox1iXaHdYV2g3iFd4d4CHeJeYp6i3mMd412jH",
+          "BVNuYWtlEBBA4BcCIBj/INcYxyi/UM+A18DP8L/4p/B/2Hewh3BnaE94P6hvwGfoR/Av6BfYF8g/qE+AH2AXSEdYd4ifyJfQn8ivmLcJmLdwrzCXKIcwbyg/IB8QFwAf",
+          "BEphd3MQgOCYJwEYAL9o30C/SJ94v1iPYGeIl2hPkG94L5AnoCe4L6BvyE+ol9Bn2I+4v+if8L/I3//X",
+          "CDEzIEZpZWxkEBgw8NcICej/+Nfo1+jT+Kfwf+BP6CfwAALYB9gHCOAAyBegD3gfYAcwFxgHAA8JwO/Q38jX0MfIv7jHsNe438DvCNiH6HfgZ9BfwG/Qd8h/2IcJsL+gt5inoJ+wl7ifqK+4t7C/DUCvWLd4n5CXsHe4X7A/kDdwT2BvSHc4j0CvDAi/ENcg3yjPIMcwvzivMJ8glxinCLcIvw==",
+          "BE1vbGUQ2OhQFwEUAN9I53jXkN+QX3hPcD9gN0hHODBIF1gXaCeAL5g/mN+wz8jX8M//1w==",
+          "B1ZvbGNhbm8QMFCIEAMWABAgEEAgUDBwwIDQkKCAgHBQkDCAEJAQoDCAUJCAoKCQ0KDAwDDQIPAQ/xAFMMBQ0GDAUKAwwAWg4LDw0OCwwKDg",
+          "BlNwaWtlcxAYMNgfAg0AHyAXMB9Av1AfaBeAH5C/oB+4F9Af4B//Lw0A7yDnQNdYz2g/eM+Q16jPuD/Iz9jv0P/Q/w==",
+          "BVRvd2VyECBAgA8CCgAPUA9ot3C3eA+ID5C3mLewD/8PCGjHcPeQ95jHiMeAb3jHaMc=",
+          "CEZvcnRyZXNzGBjYuCcIDgCPML9YhzBHeA+wJ8An6DfYZ5hHYFfQb5Df/8cFQL9At3C3cL9AvwVop2ifqJ+op2inBVh/WHeQd5B/WH8GYDdgN2AvkC+QN2A3BUhfSD9QP1BfSF8FoJegb6hvqJeglwW0OLw4vEC0QLQ4",
+          "BkFzY2VudBCAICxHAh8AF0gncE+gZ8hv0IfIp6C/iIdgf1CPOJcwbzRHJEcobxirKMNUo3CTjNewx9i34JfUX6RDoCuwG/AX/xf/FwIAB/8H",
+          "BEJhc2UgaMhonwIZQJ9Ar5CvkH9wf3BvkG+QT7BPsD8gPyBvQG9AfyB/IM9Az0DvsO+wX6BfoL+Av4DPoM8VoM+g33DfcL9gv2DfUN9QvzC/MI9Qj1BfMF8wT4BPgF9gX2CPgI+An0Cf",
+        ];
+
+        var levels = [];
+
+        for (var i = 0; i < data.length; ++i) {
+          var level = parseLevel(atob(data[i]));
+          levels.push(level);
+          drawLevel(level);
+        }
+      }
+
+
+    </script>
+  </body>
+</html>

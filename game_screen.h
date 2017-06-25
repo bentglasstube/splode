@@ -8,6 +8,7 @@
 #include "screen.h"
 #include "text.h"
 
+#include "level.h"
 #include "ship.h"
 
 class GameScreen : public Screen {
@@ -24,6 +25,7 @@ class GameScreen : public Screen {
 
     std::unique_ptr<Ship> ship_;
     std::unique_ptr<Text> text_;
-    int score_, lives_;
+    std::unique_ptr<Level> level_;
+    int score_, lives_, level_number_;
 
 };
