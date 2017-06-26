@@ -15,6 +15,7 @@ class Ship {
     void set_engines(bool main, bool left, bool right);
 
     double get_fuel() const;
+    PolyLine hull() const;
 
   private:
 
@@ -29,6 +30,5 @@ class Ship {
     int thrust_;
 
     Point coords(double angle, double radius) const;
-    PolyLine hull() const;
     PolyLine engine() const;
 };

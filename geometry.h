@@ -17,6 +17,9 @@ class PolyLine {
     void add(Point p);
     void close();
 
+    size_t size() const;
+    Point get_point(size_t i) const;
+
     void draw(Graphics& graphics, int color) const;
     bool intersect(const PolyLine& other) const;
 

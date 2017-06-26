@@ -13,6 +13,7 @@ class Level {
 
     Point get_start() const;
     int get_fuel() const;
+    bool intersect(const PolyLine& poly) const;
 
   private:
     std::string name_;

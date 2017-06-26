@@ -32,6 +32,10 @@ void GameScreen::draw(Graphics& graphics) const {
     const SDL_Rect fuel = { 0, 0, 5 * ship_->get_fuel(), 5 };
     graphics.draw_rect(&fuel, 0xffff00ff, false);
   }
+
+  if (level_->intersect(ship_->hull())) {
+    graphics.draw_rect(&r, 0xff000044, true);
+  }
 }
 
 std::string GameScreen::get_music_track() const {
