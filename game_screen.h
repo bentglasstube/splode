@@ -28,4 +28,6 @@ class GameScreen : public Screen {
     std::unique_ptr<Level> level_;
     int score_, lives_, level_number_;
 
+    void load_level();
+
 };

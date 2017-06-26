@@ -15,6 +15,8 @@ class Level {
     int get_fuel() const;
     bool intersect(const PolyLine& poly) const;
 
+    static const std::string kLevelData[21];
+
   private:
     std::string name_;
     int fuel_;

@@ -7,15 +7,22 @@ void GameScreen::init() {
   lives_ = 0;
   level_number_ = 1;
 
-  // TODO load appropriate level
-  const std::string data("\x08Training\x10\xc0\xd0`\x80\x01\x09\x00 0@P\x80p\x80\x80p\xa0\xa0\xd0\x90\xf0`\xffP\x0a", 35);
-  level_.reset(new Level(data));
-  ship_.reset(new Ship(level_->get_start(), level_->get_fuel()));
+  load_level();
 }
 
 bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
   ship_->set_engines(input.key_held(SDL_SCANCODE_W), input.key_held(SDL_SCANCODE_A), input.key_held(SDL_SCANCODE_D));
   ship_->update(audio, elapsed);
+
+  if (input.key_pressed(SDL_SCANCODE_LEFTBRACKET)) {
+    level_number_ = (level_number_ + 20) % 21;
+    load_level();
+  }
+
+  if (input.key_pressed(SDL_SCANCODE_RIGHTBRACKET)) {
+    level_number_ = (level_number_  + 1) % 21;
+    load_level();
+  }
 
   return true;
 }
@@ -44,4 +51,9 @@ std::string GameScreen::get_music_track() const {
 
 Screen* GameScreen::next_screen() {
   return nullptr;
+}
+
+void GameScreen::load_level() {
+  level_.reset(new Level(Level::kLevelData[level_number_]));
+  ship_.reset(new Ship(level_->get_start(), level_->get_fuel()));
 }
