@@ -27,11 +27,29 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
   return true;
 }
 
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
 void GameScreen::draw(Graphics& graphics) const {
   const SDL_Rect r = { 0, 0, 256, 256 };
   graphics.draw_rect(&r, 0x00ff00ff, false);
 
   // TODO camera
+  const double viewport_padding = 5;
+
+  const double top = MIN(ship_->position().y, level_->get_pad().y) - viewport_padding;
+  const double bottom = MAX(ship_->position().y, level_->get_pad().y) + viewport_padding;
+  const double left = MIN(ship_->position().x, level_->get_pad().x) - viewport_padding;
+  const double right = MAX(ship_->position().x, level_->get_pad().x) + viewport_padding;
+
+  const SDL_Rect viewport = {
+    MAX(left, 0), MAX(top, 0),
+    MIN(right, 256), MIN(bottom, 256),
+  };
+
+  // TODO use viewport for scaling instead of drawing it
+  graphics.draw_rect(&viewport, 0xffffffff, false);
+
   level_->draw(graphics);
   ship_->draw(graphics);
 

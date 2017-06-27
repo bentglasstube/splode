@@ -12,6 +12,7 @@ class Level {
     void draw(Graphics& graphics) const;
 
     Point get_start() const;
+    Point get_pad() const;
     int get_fuel() const;
     bool intersect(const PolyLine& poly) const;
 

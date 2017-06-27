@@ -35,6 +35,10 @@ Point Level::get_start() const {
   return start_;
 }
 
+Point Level::get_pad() const {
+  return pad_;
+}
+
 int Level::get_fuel() const {
   return fuel_;
 }

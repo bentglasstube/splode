@@ -16,6 +16,7 @@ class Ship {
 
     double get_fuel() const;
     PolyLine hull() const;
+    Point position() const;
 
   private:
 

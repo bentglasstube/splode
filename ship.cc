@@ -71,3 +71,7 @@ PolyLine Ship::hull() const {
 double Ship::get_fuel() const {
   return fuel_;
 }
+
+Point Ship::position() const {
+  return { x_, y_ };
+}
