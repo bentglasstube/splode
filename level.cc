@@ -28,9 +28,7 @@ void Level::draw(Graphics& graphics, const Rect& viewport) const {
     p.draw(graphics, 0x00ff00ff, viewport);
   }
 
-  // TODO scale for viewport
-  const SDL_Rect r = { pad_.x - 7.5, pad_.y, 15, 5 };
-  graphics.draw_rect(&r, 0xffffffff, false);
+  pad_rect().draw(graphics, 0xffffffff, viewport);
 }
 
 Point Level::start() const {
@@ -50,6 +48,18 @@ bool Level::intersect(const PolyLine& poly) const {
     if (seg.intersect(poly)) return true;
   }
   return false;
+}
+
+PolyLine Level::pad_rect() const {
+  PolyLine p;
+
+  p.add(pad_.x - 3 * kPadSize, pad_.y);
+  p.add(pad_.x + 3 * kPadSize, pad_.y);
+  p.add(pad_.x + 3 * kPadSize, pad_.y + 2 * kPadSize);
+  p.add(pad_.x - 3 * kPadSize, pad_.y + 2 * kPadSize);
+  p.close();
+
+  return p;
 }
 
 const std::string Level::kLevelData[21] = {
