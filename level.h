@@ -9,11 +9,11 @@
 class Level {
   public:
     Level(const std::string& data);
-    void draw(Graphics& graphics) const;
+    void draw(Graphics& graphics, const Rect& viewport) const;
 
-    Point get_start() const;
-    Point get_pad() const;
-    int get_fuel() const;
+    Point start() const;
+    Point pad() const;
+    int fuel() const;
     bool intersect(const PolyLine& poly) const;
 
     static const std::string kLevelData[21];

@@ -23,11 +23,14 @@ class GameScreen : public Screen {
 
   private:
 
+    const double kViewportPadding = 25;
+
     std::unique_ptr<Ship> ship_;
     std::unique_ptr<Text> text_;
     std::unique_ptr<Level> level_;
     int score_, lives_, level_number_;
 
     void load_level();
+    Rect viewport() const;
 
 };

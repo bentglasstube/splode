@@ -31,11 +31,9 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
   return true;
 }
 
-void Ship::draw(Graphics& graphics) const {
-  if (engine_ && fuel_ > 0) {
-    engine().draw(graphics, 0xff0000ff);
-  }
-  hull().draw(graphics, 0x00ffffff);
+void Ship::draw(Graphics& graphics, const Rect& viewport) const {
+  if (engine_ && fuel_ > 0) engine().draw(graphics, 0xff0000ff, viewport);
+  hull().draw(graphics, 0x00ffffff, viewport);
 }
 
 void Ship::set_engines(bool main, bool left, bool right) {
@@ -68,7 +66,7 @@ PolyLine Ship::hull() const {
   return p;
 }
 
-double Ship::get_fuel() const {
+double Ship::fuel() const {
   return fuel_;
 }
 

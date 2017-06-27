@@ -10,11 +10,11 @@ class Ship {
     Ship(const Point& pos, double fuel);
 
     bool update(Audio& audio, unsigned int elapsed);
-    void draw(Graphics& graphics) const;
+    void draw(Graphics& graphics, const Rect& viewport) const;
 
     void set_engines(bool main, bool left, bool right);
 
-    double get_fuel() const;
+    double fuel() const;
     PolyLine hull() const;
     Point position() const;
 

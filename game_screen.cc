@@ -1,5 +1,9 @@
 #include "game_screen.h"
 
+#include <cmath>
+
+#include "geometry.h"
+
 void GameScreen::init() {
   text_.reset(new Text("text.png"));
 
@@ -27,39 +31,15 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
   return true;
 }
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-
 void GameScreen::draw(Graphics& graphics) const {
-  const SDL_Rect r = { 0, 0, 256, 256 };
-  graphics.draw_rect(&r, 0x00ff00ff, false);
+  const Rect v = viewport();
 
-  // TODO camera
-  const double viewport_padding = 5;
+  level_->draw(graphics, v);
+  ship_->draw(graphics, v);
 
-  const double top = MIN(ship_->position().y, level_->get_pad().y) - viewport_padding;
-  const double bottom = MAX(ship_->position().y, level_->get_pad().y) + viewport_padding;
-  const double left = MIN(ship_->position().x, level_->get_pad().x) - viewport_padding;
-  const double right = MAX(ship_->position().x, level_->get_pad().x) + viewport_padding;
-
-  const SDL_Rect viewport = {
-    MAX(left, 0), MAX(top, 0),
-    MIN(right, 256), MIN(bottom, 256),
-  };
-
-  // TODO use viewport for scaling instead of drawing it
-  graphics.draw_rect(&viewport, 0xffffffff, false);
-
-  level_->draw(graphics);
-  ship_->draw(graphics);
-
-  if (ship_->get_fuel() > 0) {
-    const SDL_Rect fuel = { 0, 0, 5 * ship_->get_fuel(), 5 };
+  if (ship_->fuel() > 0) {
+    const SDL_Rect fuel = { 0, 0, 5 * ship_->fuel(), 5 };
     graphics.draw_rect(&fuel, 0xffff00ff, false);
-  }
-
-  if (level_->intersect(ship_->hull())) {
-    graphics.draw_rect(&r, 0xff000044, true);
   }
 }
 
@@ -73,5 +53,31 @@ Screen* GameScreen::next_screen() {
 
 void GameScreen::load_level() {
   level_.reset(new Level(Level::kLevelData[level_number_]));
-  ship_.reset(new Ship(level_->get_start(), level_->get_fuel()));
+  ship_.reset(new Ship(level_->start(), level_->fuel()));
+}
+
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+Rect GameScreen::viewport() const {
+  const double top = MAX(MIN(ship_->position().y, level_->pad().y) - kViewportPadding, 0);
+  const double left = MAX(MIN(ship_->position().x, level_->pad().x) - kViewportPadding, 0);
+  const double right = MIN(MAX(ship_->position().x, level_->pad().x) + kViewportPadding, 256);
+  const double bottom = MIN(MAX(ship_->position().y, level_->pad().y) + kViewportPadding, 256);
+
+  const double height = bottom - top;
+  const double width = right - left;
+
+  const double screen_ratio = 16 / (double) 9;
+  const double view_ratio = width / height;
+
+  if (view_ratio < screen_ratio) {
+    // view too narrow, expand width
+    const double target_width = screen_ratio * height;
+    return { left - (target_width - width) / 2, top, target_width, height };
+  } else {
+    // view too wide, expand height
+    const double target_height = width / screen_ratio;
+    return { left, top - (target_height - height) / 2, width, target_height };
+  }
 }

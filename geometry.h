@@ -10,6 +10,14 @@ class Point {
     double x, y;
 };
 
+class Rect {
+  public:
+    Rect(double x, double y, double w, double h);
+    double x, y, w, h;
+
+    void draw(Graphics& graphics, int color, const Rect& viewport) const;
+};
+
 class PolyLine {
   public:
 
@@ -18,9 +26,9 @@ class PolyLine {
     void close();
 
     size_t size() const;
-    Point get_point(size_t i) const;
+    Point point(size_t i) const;
 
-    void draw(Graphics& graphics, int color) const;
+    void draw(Graphics& graphics, int color, const Rect& viewport) const;
     bool intersect(const PolyLine& other) const;
 
   private:

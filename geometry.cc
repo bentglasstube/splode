@@ -2,6 +2,8 @@
 
 Point::Point(double x, double y) : x(x), y(y) {}
 
+Rect::Rect(double x, double y, double w, double h) : x(x), y(y), wh(w), (h) {}
+
 void PolyLine::add(double x, double y) {
   points_.emplace_back(x, y);
 }
@@ -18,13 +20,23 @@ size_t PolyLine::size() const {
   return points_.size();
 }
 
-Point PolyLine::get_point(size_t i) const {
+Point PolyLine::point(size_t i) const {
   return points_.at(i);
 }
 
-void PolyLine::draw(Graphics& graphics, int color) const {
+void PolyLine::draw(Graphics& graphics, int color, const Rect& viewport) const {
   for (size_t i = 1; i < points_.size(); ++i) {
-    graphics.draw_line(points_[i - 1].x, points_[i - 1].y, points_[i].x, points_[i].y, color);
+    double x1 = points_[i - 1].x;
+    double y1 = points_[i - 1].y;
+    double x2 = points_[i].x;
+    double y2 = points_[i].y;
+
+    x1 = (x1 - viewport.x) / (double) viewport.w * graphics.width();
+    y1 = (y1 - viewport.y) / (double) viewport.h * graphics.height();
+    x2 = (x2 - viewport.x) / (double) viewport.w * graphics.width();
+    y2 = (y2 - viewport.y) / (double) viewport.h * graphics.height();
+
+    graphics.draw_line(x1, y1, x2, y2, color);
   }
 }
 
@@ -47,7 +59,7 @@ bool lines_intersect(Point p, Point q, Point r, Point s) {
 bool PolyLine::intersect(const PolyLine& other) const {
   for (size_t i = 1; i < size(); ++i) {
     for (size_t j = 1; j < other.size(); ++j) {
-      if (lines_intersect(get_point(i - 1), get_point(i), other.get_point(j - 1), other.get_point(j))) return true;
+      if (lines_intersect(point(i - 1), point(i), other.point(j - 1), other.point(j))) return true;
     }
   }
 

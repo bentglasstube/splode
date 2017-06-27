@@ -23,23 +23,25 @@ Level::Level(const std::string& data) : name_(""), fuel_(0), start_(0, 0), pad_(
   }
 }
 
-void Level::draw(Graphics& graphics) const {
+void Level::draw(Graphics& graphics, const Rect& viewport) const {
   for (const auto& p : terrain_) {
-    p.draw(graphics, 0x00ff00ff);
+    p.draw(graphics, 0x00ff00ff, viewport);
   }
+
+  // TODO scale for viewport
   const SDL_Rect r = { pad_.x - 7.5, pad_.y, 15, 5 };
   graphics.draw_rect(&r, 0xffffffff, false);
 }
 
-Point Level::get_start() const {
+Point Level::start() const {
   return start_;
 }
 
-Point Level::get_pad() const {
+Point Level::pad() const {
   return pad_;
 }
 
-int Level::get_fuel() const {
+int Level::fuel() const {
   return fuel_;
 }
 
