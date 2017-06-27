@@ -60,24 +60,35 @@ void GameScreen::load_level() {
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 Rect GameScreen::viewport() const {
-  const double top = MAX(MIN(ship_->position().y, level_->pad().y) - kViewportPadding, 0);
-  const double left = MAX(MIN(ship_->position().x, level_->pad().x) - kViewportPadding, 0);
+  double top = MAX(MIN(ship_->position().y, level_->pad().y) - kViewportPadding, 0);
+  double left = MAX(MIN(ship_->position().x, level_->pad().x) - kViewportPadding, 0);
   const double right = MIN(MAX(ship_->position().x, level_->pad().x) + kViewportPadding, 256);
   const double bottom = MIN(MAX(ship_->position().y, level_->pad().y) + kViewportPadding, 256);
 
-  const double height = bottom - top;
-  const double width = right - left;
+  double height = bottom - top;
+  double width = right - left;
 
+  // consider passing in graphics here to get real screen size
   const double screen_ratio = 16 / (double) 9;
   const double view_ratio = width / height;
 
   if (view_ratio < screen_ratio) {
     // view too narrow, expand width
     const double target_width = screen_ratio * height;
-    return { left - (target_width - width) / 2, top, target_width, height };
+    left = left - (target_width - width) / 2;
+    width = target_width;
   } else {
     // view too wide, expand height
     const double target_height = width / screen_ratio;
-    return { left, top - (target_height - height) / 2, width, target_height };
+    top -= (target_height - height) / 2;
+    height = target_height;
   }
+
+  if (top < 0) top = 0;
+  if (left < 0) left = 0;
+
+  if (top + height > 256) top = height - 256;
+  if (left + width > 256) left = width - 256;
+
+  return { left, top, width, height};
 }
