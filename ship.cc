@@ -2,7 +2,9 @@
 
 #include <cmath>
 
-Ship::Ship(const Point& pos, double fuel)  : x_(pos.x), y_(pos.y), vx_(0), vy_(0), angle_(-kPi / 2), fuel_(fuel), engine_(false), thrust_(0) {}
+Ship::Ship(const Point& pos, double fuel) :
+  x_(pos.x), y_(pos.y), vx_(0), vy_(0), angle_(kUp),
+  fuel_(fuel), engine_(false), thrust_(0), flips_(0) {}
 
 bool Ship::update(Audio& audio, unsigned int elapsed) {
   double ax = 0;
@@ -48,9 +50,9 @@ Point Ship::coords(double angle, double radius) const {
 PolyLine Ship::engine() const {
   PolyLine p;
 
-  p.add(coords(kPi / 2, kShipSize / 2));
-  p.add(coords(kPi, kShipSize));
-  p.add(coords(-kPi / 2, kShipSize / 2));
+  p.add(coords(kPi / 2, kSize / 2));
+  p.add(coords(kPi, kSize));
+  p.add(coords(-kPi / 2, kSize / 2));
 
   return p;
 }
@@ -58,9 +60,9 @@ PolyLine Ship::engine() const {
 PolyLine Ship::hull() const {
   PolyLine p;
 
-  p.add(coords(0, kShipSize * 3));
-  p.add(coords(kPi / 2, kShipSize));
-  p.add(coords(-kPi / 2, kShipSize));
+  p.add(coords(0, kSize * 3));
+  p.add(coords(kPi / 2, kSize));
+  p.add(coords(-kPi / 2, kSize));
   p.close();
 
   return p;
@@ -72,4 +74,18 @@ double Ship::fuel() const {
 
 Point Ship::position() const {
   return { x_, y_ };
+}
+
+int Ship::velocity_score() const {
+  const double v = std::sqrt(vx_ * vx_ + vy_ * vy_);
+  return 1000 * (1 - v / kMaxVelocity);
+}
+
+int Ship::angle_score() const {
+  const double a = std::abs(angle_ - kUp);
+  return 1000 * (1 - a / kMaxAngle);
+}
+
+int Ship::flips() const {
+  return flips_;
 }

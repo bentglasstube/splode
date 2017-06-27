@@ -1,6 +1,7 @@
 #include "game_screen.h"
 
 #include <cmath>
+#include <iostream>
 
 #include "geometry.h"
 
@@ -18,13 +19,12 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
   ship_->set_engines(input.key_held(SDL_SCANCODE_W), input.key_held(SDL_SCANCODE_A), input.key_held(SDL_SCANCODE_D));
   ship_->update(audio, elapsed);
 
-  if (input.key_pressed(SDL_SCANCODE_LEFTBRACKET)) {
-    level_number_ = (level_number_ + 20) % 21;
-    load_level();
-  }
-
-  if (input.key_pressed(SDL_SCANCODE_RIGHTBRACKET)) {
-    level_number_ = (level_number_  + 1) % 21;
+  if (level_->intersect(ship_->hull())) {
+    if (calculate_score()) {
+      ++level_number_;
+    } else {
+      --lives_;
+    }
     load_level();
   }
 
@@ -91,4 +91,32 @@ Rect GameScreen::viewport() const {
   if (left + width > 256) left = width - 256;
 
   return { left, top, width, height};
+}
+
+bool GameScreen::calculate_score() {
+  // TODO save scores in score object
+  const int p = level_->pad_score(ship_->position());
+  if (p < 0) {
+    std::cout << "Missed the pad\n";
+    return false;
+  }
+
+  const int v = ship_->velocity_score();
+  if (v < 0) {
+    std::cout << "Landing too hard\n";
+    return false;
+  }
+
+  const int a = ship_->angle_score();
+  if (a < 0) {
+    std::cout << "Tipped over\n";
+    return false;
+  }
+
+  const int f = ship_->flips() * 2500;
+
+  // TODO time bonus?
+  // TODO fuel bonus?
+
+  return true;
 }

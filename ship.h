@@ -7,6 +7,8 @@
 
 class Ship {
   public:
+    static constexpr double kSize = 2.5;
+
     Ship(const Point& pos, double fuel);
 
     bool update(Audio& audio, unsigned int elapsed);
@@ -18,17 +20,24 @@ class Ship {
     PolyLine hull() const;
     Point position() const;
 
+    int velocity_score() const;
+    int angle_score() const;
+    int flips() const;
+
   private:
 
-    const double kPi = 3.14159265358979;
-    const double kGravity = 0.0001;
-    const double kEngineFactor = 2.0;
-    const double kRotationSpeed = kGravity * 500;
-    const double kShipSize = 2.5;
+    static constexpr double kEngineFactor = 2.0;
+    static constexpr double kGravity = 0.0001;
+    static constexpr double kMaxVelocity = 5;
+    static constexpr double kPi = 3.14159265358979;
+
+    static constexpr double kMaxAngle = 3 * kPi / 4;
+    static constexpr double kRotationSpeed = kGravity * 500;
+    static constexpr double kUp = -kPi / 2;
 
     double x_, y_, vx_, vy_, angle_, fuel_;
     bool engine_;
-    int thrust_;
+    int thrust_, flips_;
 
     Point coords(double angle, double radius) const;
     PolyLine engine() const;

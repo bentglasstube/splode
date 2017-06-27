@@ -32,5 +32,5 @@ class GameScreen : public Screen {
 
     void load_level();
     Rect viewport() const;
-
+    bool calculate_score();
 };

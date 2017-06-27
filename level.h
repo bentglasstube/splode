@@ -14,6 +14,7 @@ class Level {
     Point start() const;
     Point pad() const;
     int fuel() const;
+    int pad_score(const Point& pos) const;
     bool intersect(const PolyLine& poly) const;
 
     static const std::string kLevelData[21];

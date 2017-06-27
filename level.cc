@@ -43,6 +43,11 @@ int Level::fuel() const {
   return fuel_;
 }
 
+int Level::pad_score(const Point& pos) const {
+  const double d = std::sqrt((pos.x - pad_.x) * (pos.x - pad_.x));
+  return 1000 * (1 - d / kMaxDistance);
+}
+
 bool Level::intersect(const PolyLine& poly) const {
   for (const auto& seg : terrain_) {
     if (seg.intersect(poly)) return true;
