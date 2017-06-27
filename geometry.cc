@@ -2,7 +2,7 @@
 
 Point::Point(double x, double y) : x(x), y(y) {}
 
-Rect::Rect(double x, double y, double w, double h) : x(x), y(y), wh(w), (h) {}
+Rect::Rect(double x, double y, double w, double h) : x(x), y(y), w(w), h(h) {}
 
 void PolyLine::add(double x, double y) {
   points_.emplace_back(x, y);
