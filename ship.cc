@@ -18,14 +18,20 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
     fuel_ -= elapsed / 1000.0f;
   }
 
-  // TODO set cap on accelleration
-
   angle_ += kRotationSpeed * thrust_;
 
-  // TODO check for flips
+  if (angle_ > kPi / 2) {
+    angle_ -= 2 * kPi;
+    flips_++;
+  } else if (angle_ < -3 * kPi / 2) {
+    angle_ += 2 * kPi;
+    flips_++;
+  }
 
   vx_ += ax * elapsed;
   vy_ += ay * elapsed;
+
+  // TODO set cap on velocity
 
   x_ += vx_ * elapsed;
   y_ += vy_ * elapsed;
