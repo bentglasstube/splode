@@ -19,6 +19,12 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
   ship_->set_engines(input.key_held(SDL_SCANCODE_W), input.key_held(SDL_SCANCODE_A), input.key_held(SDL_SCANCODE_D));
   ship_->update(audio, elapsed);
 
+  const Point p = ship_->position();
+  if (p.x < 0 || p.x > 256 || p.y < 0) {
+    --lives_;
+    load_level();
+  }
+
   if (level_->intersect(ship_->hull())) {
     if (calculate_score()) {
       ++level_number_;
@@ -77,6 +83,8 @@ Rect GameScreen::viewport() const {
     const double target_width = screen_ratio * height;
     left = left - (target_width - width) / 2;
     width = target_width;
+
+    // TODO handle target_width > 256
   } else {
     // view too wide, expand height
     const double target_height = width / screen_ratio;
@@ -87,8 +95,8 @@ Rect GameScreen::viewport() const {
   if (top < 0) top = 0;
   if (left < 0) left = 0;
 
-  if (top + height > 256) top = height - 256;
-  if (left + width > 256) left = width - 256;
+  /* if (top + height > 256) top = height - 256; */
+  /* if (left + width > 256) left = width - 256; */
 
   return { left, top, width, height};
 }
