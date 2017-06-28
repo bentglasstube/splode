@@ -20,7 +20,7 @@ class Level {
     static const std::string kLevelData[21];
 
   private:
-    static constexpr double kPadSize = 5;
+    static constexpr double kPadSize = 2.5;
     static constexpr double kMaxDistance = 5;
 
     std::string name_;

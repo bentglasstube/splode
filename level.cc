@@ -65,8 +65,8 @@ PolyLine Level::pad_rect() const {
 
   p.add(pad_.x - 3 * kPadSize, pad_.y);
   p.add(pad_.x + 3 * kPadSize, pad_.y);
-  p.add(pad_.x + 3 * kPadSize, pad_.y + 2 * kPadSize);
-  p.add(pad_.x - 3 * kPadSize, pad_.y + 2 * kPadSize);
+  p.add(pad_.x + 3 * kPadSize, pad_.y + kPadSize);
+  p.add(pad_.x - 3 * kPadSize, pad_.y + kPadSize);
   p.close();
 
   return p;
