@@ -3,22 +3,22 @@
 #include <cmath>
 
 Ship::Ship(const Point& pos, double fuel) :
-  x_(pos.x), y_(pos.y), vx_(0), vy_(0), angle_(kUp),
-  fuel_(fuel), engine_(false), thrust_(0), flips_(0) {}
+  x_(pos.x), y_(pos.y), vx_(0), vy_(0), angle_(kUp), fuel_(fuel),
+  engine_(false), thrust_(0), flips_(0) {}
 
 bool Ship::update(Audio& audio, unsigned int elapsed) {
   double ax = 0;
   double ay = kGravity;
 
   if (engine_ && fuel_ > 0) {
-    ax += kEngineFactor * kGravity * cos(angle_);
-    ay += kEngineFactor * kGravity * sin(angle_);
+    ax += kGravity * kEngineFactor * cos(angle_);
+    ay += kGravity * kEngineFactor * sin(angle_);
 
     // audio.play_sample("thrust.wav");
     fuel_ -= elapsed / 1000.0f;
   }
 
-  angle_ += kRotationSpeed * thrust_;
+  angle_ += kGravity * kThrustFactor * thrust_;
 
   if (angle_ > kPi / 2) {
     angle_ -= 2 * kPi;
@@ -49,20 +49,6 @@ void Ship::draw(Graphics& graphics, const Rect& viewport) const {
 void Ship::set_engines(bool main, bool left, bool right) {
   engine_ = main;
   thrust_ = 0 + (left ? -1 : 0) + (right ? 1 : 0);
-}
-
-Point Ship::coords(double angle, double radius) const {
-  return { x_ + cos(angle_ + angle) * radius, y_ + sin(angle_ + angle) * radius };
-}
-
-PolyLine Ship::engine() const {
-  PolyLine p;
-
-  p.add(coords(kPi / 2, kSize / 2));
-  p.add(coords(kPi, kSize));
-  p.add(coords(-kPi / 2, kSize / 2));
-
-  return p;
 }
 
 PolyLine Ship::hull() const {
@@ -96,4 +82,18 @@ int Ship::angle_score() const {
 
 int Ship::flips() const {
   return flips_;
+}
+
+Point Ship::coords(double angle, double radius) const {
+  return { x_ + cos(angle_ + angle) * radius, y_ + sin(angle_ + angle) * radius };
+}
+
+PolyLine Ship::engine() const {
+  PolyLine p;
+
+  p.add(coords(kPi / 2, kSize / 2));
+  p.add(coords(kPi, kSize));
+  p.add(coords(-kPi / 2, kSize / 2));
+
+  return p;
 }

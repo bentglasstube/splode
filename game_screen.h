@@ -19,6 +19,8 @@ class GameScreen : public Screen {
     void draw(Graphics& graphics) const override;
     std::string get_music_track() const override;
 
+    void set_difficulty(int difficulty);
+
     Screen* next_screen() override;
 
   private:
@@ -28,7 +30,7 @@ class GameScreen : public Screen {
     std::unique_ptr<Ship> ship_;
     std::unique_ptr<Text> text_;
     std::unique_ptr<Level> level_;
-    int score_, lives_, level_number_;
+    int score_, lives_, level_number_, difficulty_;
 
     void load_level();
     Rect viewport() const;

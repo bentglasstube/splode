@@ -44,7 +44,9 @@ void TitleScreen::draw(Graphics& graphics) const {
 
 Screen* TitleScreen::next_screen() {
   if (choice_ < 3) {
-    return new GameScreen();
+    GameScreen* s = new GameScreen();
+    s->set_difficulty(choice_);
+    return s;
   } else {
     return nullptr;
   }

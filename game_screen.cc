@@ -18,7 +18,7 @@ void GameScreen::init() {
 
 bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
   ship_->set_engines(input.key_held(SDL_SCANCODE_W), input.key_held(SDL_SCANCODE_A), input.key_held(SDL_SCANCODE_D));
-  ship_->update(audio, elapsed);
+  ship_->update(audio, elapsed * (difficulty_ + 1) / 2);
 
   const Point p = ship_->position();
   if (p.x < 0 || p.x > 255 || p.y < 0) {
@@ -67,6 +67,10 @@ void GameScreen::draw(Graphics& graphics) const {
 
 std::string GameScreen::get_music_track() const {
   return "level.ogg";
+}
+
+void GameScreen::set_difficulty(int difficulty) {
+  difficulty_ = difficulty;
 }
 
 Screen* GameScreen::next_screen() {
