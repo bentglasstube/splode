@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <sstream>
 
 #include "geometry.h"
 
@@ -20,15 +21,18 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
   ship_->update(audio, elapsed);
 
   const Point p = ship_->position();
-  if (p.x < 0 || p.x > 256 || p.y < 0) {
+  if (p.x < 0 || p.x > 255 || p.y < 0) {
+    audio.play_sample("crash.wav");
     --lives_;
     load_level();
   }
 
   if (level_->intersect(ship_->hull())) {
     if (calculate_score()) {
+      audio.play_sample("land.wav");
       ++level_number_;
     } else {
+      audio.play_sample("crash.wav");
       --lives_;
     }
     load_level();
@@ -43,10 +47,22 @@ void GameScreen::draw(Graphics& graphics) const {
   level_->draw(graphics, v);
   ship_->draw(graphics, v);
 
-  if (ship_->fuel() > 0) {
-    const SDL_Rect fuel = { 0, 0, 5 * ship_->fuel(), 5 };
-    graphics.draw_rect(&fuel, 0xffff00ff, false);
-  }
+  PolyLine p;
+  p.add(0, 0);
+  p.add(0, 255);
+  p.add(255, 255);
+  p.add(255, 0);
+  p.close();
+
+  p.draw(graphics, 0xffffff80, v);
+
+  const SDL_Rect fuel_outer = { 5, 5, 10 * level_->fuel(), 10 };
+  const SDL_Rect fuel_inner = { 5, 5, 10 * ship_->fuel(), 10 };
+  graphics.draw_rect(&fuel_outer, 0xffff00ff, false);
+  graphics.draw_rect(&fuel_inner, 0xffff00ff, true);
+
+  const SDL_Rect border = { 0, 0, graphics.width(), graphics.height() };
+  graphics.draw_rect(&border, 0x00ff00ff, false);
 }
 
 std::string GameScreen::get_music_track() const {
@@ -68,35 +84,22 @@ void GameScreen::load_level() {
 Rect GameScreen::viewport() const {
   double top = MAX(MIN(ship_->position().y, level_->pad().y) - kViewportPadding, 0);
   double left = MAX(MIN(ship_->position().x, level_->pad().x) - kViewportPadding, 0);
-  const double right = MIN(MAX(ship_->position().x, level_->pad().x) + kViewportPadding, 256);
-  const double bottom = MIN(MAX(ship_->position().y, level_->pad().y) + kViewportPadding, 256);
+  const double right = MIN(MAX(ship_->position().x, level_->pad().x) + kViewportPadding, 255);
+  const double bottom = MIN(MAX(ship_->position().y, level_->pad().y) + kViewportPadding, 255);
 
   double height = bottom - top;
   double width = right - left;
 
-  // consider passing in graphics here to get real screen size
-  const double screen_ratio = 16 / (double) 9;
-  const double view_ratio = width / height;
-
-  if (view_ratio < screen_ratio) {
-    // view too narrow, expand width
-    const double target_width = screen_ratio * height;
-    left = left - (target_width - width) / 2;
-    width = target_width;
-
-    // TODO handle target_width > 256
+  if (width < height) {
+    width = height;
   } else {
-    // view too wide, expand height
-    const double target_height = width / screen_ratio;
-    top -= (target_height - height) / 2;
-    height = target_height;
+    height = width;
   }
 
   if (top < 0) top = 0;
   if (left < 0) left = 0;
-
-  /* if (top + height > 256) top = height - 256; */
-  /* if (left + width > 256) left = width - 256; */
+  if (top + height > 255) top = 255 - height;
+  if (left + width > 255) left = 255 - width;
 
   return { left, top, width, height};
 }

@@ -14,7 +14,7 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
     ax += kEngineFactor * kGravity * cos(angle_);
     ay += kEngineFactor * kGravity * sin(angle_);
 
-    audio.play_sample("thrust.wav");
+    // audio.play_sample("thrust.wav");
     fuel_ -= elapsed / 1000.0f;
   }
 
@@ -22,9 +22,11 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
 
   if (angle_ > kPi / 2) {
     angle_ -= 2 * kPi;
+    audio.play_sample("flip.wav");
     flips_++;
   } else if (angle_ < -3 * kPi / 2) {
     angle_ += 2 * kPi;
+    audio.play_sample("flip.wav");
     flips_++;
   }
 

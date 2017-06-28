@@ -26,8 +26,8 @@ class Ship {
 
   private:
 
-    static constexpr double kEngineFactor = 2.0;
-    static constexpr double kGravity = 0.0001;
+    static constexpr double kEngineFactor = 2;
+    static constexpr double kGravity = 0.00005;
     static constexpr double kMaxVelocity = 5;
     static constexpr double kPi = 3.14159265358979;
 
