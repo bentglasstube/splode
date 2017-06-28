@@ -1,5 +1,7 @@
 #include "level.h"
 
+#include <cmath>
+
 Level::Level(const std::string& data) : name_(""), fuel_(0), start_(0, 0), pad_(0, 0), terrain_() {
   name_ = data.substr(1, (unsigned char) data.at(0));
   size_t offset = (unsigned char) data.at(0) + 1;
@@ -44,7 +46,10 @@ int Level::fuel() const {
 }
 
 int Level::pad_score(const Point& pos) const {
-  const double d = std::sqrt((pos.x - pad_.x) * (pos.x - pad_.x));
+  const double dx = pos.x - pad_.x;
+  const double dy = pos.y - pad_.y;
+  const double d = std::sqrt(dx * dx + dy * dy);
+
   return 1000 * (1 - d / kMaxDistance);
 }
 
