@@ -10,7 +10,7 @@ void GameScreen::init() {
   text_.reset(new Text("text.png"));
 
   score_ = 0;
-  lives_ = 0;
+  lives_ = 5;
   level_number_ = 1;
 
   load_level();
@@ -42,7 +42,7 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
           if (reason_ == DeathReason::NONE) {
             state_ = GameState::OUTRO;
             audio.play_sample("land.wav");
-            score_ += score_info_.total();
+            add_points(score_info_.total());
           } else {
             death(audio);
           }
@@ -52,16 +52,21 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
       break;
 
     case GameState::DEATH:
-      if (input.any_pressed()) load_level();
-      // TODO handle game over
+      if (input.any_pressed()) {
+        if (lives_ > 0) {
+          load_level();
+        } else {
+          return false;
+        }
+      }
+
       break;
 
     case GameState::OUTRO:
       if (input.any_pressed()) {
-        ++level_number_;
+        if (level_number_ > 0) ++level_number_;
+        if (level_number_ > 20) return false;
         load_level();
-
-        // TODO handle last level
       }
       break;
   }
@@ -75,15 +80,15 @@ void GameScreen::draw(Graphics& graphics) const {
   level_->draw(graphics, v);
   ship_->draw(graphics, v);
 
-  const SDL_Rect fuel_outer = { 5, 5, 10 * level_->fuel(), 10 };
-  const SDL_Rect fuel_inner = { 5, 5, 10 * ship_->fuel(), 10 };
-  graphics.draw_rect(&fuel_outer, 0xffff00ff, false);
-  graphics.draw_rect(&fuel_inner, 0xffff00ff, true);
+  const SDL_Rect fuel = { 8, 24, 8 * ship_->fuel(), 8 };
+  graphics.draw_rect(&fuel, 0x000000ff, true);
+  graphics.draw_rect(&fuel, 0xffff00ff, false);
 
   const SDL_Rect border = { 0, 0, graphics.width(), graphics.height() };
   graphics.draw_rect(&border, 0x00ff00ff, false);
 
-  text_->draw(graphics, std::to_string(score_), graphics.width() - 8, 8, Text::Alignment::RIGHT);
+  text_->draw(graphics, std::to_string(score_), 8, 8);
+  text_->draw(graphics, "Ships: " + std::to_string(lives_), graphics.width() - 8, 8, Text::Alignment::RIGHT);
 
   switch (state_) {
     case GameState::INTRO:
@@ -205,6 +210,13 @@ void GameScreen::draw_score_info(Graphics& graphics) const {
   text_->draw(graphics, std::to_string(score_info_.angle), r, y + 32, Text::Alignment::RIGHT);
   text_->draw(graphics, std::to_string(score_info_.flips), r, y + 48, Text::Alignment::RIGHT);
   text_->draw(graphics, "x" + std::to_string(score_info_.multiplier), r, y + 64, Text::Alignment::RIGHT);
+}
+
+void GameScreen::add_points(int points) {
+  const int before = score_ / 20000;
+  score_ += points;
+  const int after = score_ / 20000;
+  if (after > before) ++lives_;
 }
 
 int GameScreen::ScoreInfo::total() const {

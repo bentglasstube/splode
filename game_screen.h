@@ -50,4 +50,5 @@ class GameScreen : public Screen {
     std::string death_reason() const;
     void info_box(Graphics& graphics, int w, int h, const std::string& title) const;
     void draw_score_info(Graphics& graphics) const;
+    void add_points(int points);
 };
