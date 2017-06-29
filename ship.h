@@ -29,11 +29,12 @@ class Ship {
     static constexpr double kEngineFactor = 2.5;
     static constexpr double kThrustFactor = 700;
     static constexpr double kGravity = 0.00005;
-    static constexpr double kMaxVelocity = 5;
     static constexpr double kPi = 3.14159265358979;
 
-    static constexpr double kMaxAngle = 3 * kPi / 4;
     static constexpr double kUp = -kPi / 2;
+
+    static constexpr double kMaxAngle = 3 * kPi / 32;
+    static constexpr double kMaxVelocity = 0.02;
 
     double x_, y_, vx_, vy_, angle_, fuel_;
     bool engine_;

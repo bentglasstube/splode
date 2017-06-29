@@ -33,6 +33,10 @@ void Level::draw(Graphics& graphics, const Rect& viewport) const {
   pad_rect().draw(graphics, 0xffffffff, viewport);
 }
 
+std::string Level::name() const {
+  return name_;
+}
+
 Point Level::start() const {
   return start_;
 }
@@ -46,11 +50,9 @@ int Level::fuel() const {
 }
 
 int Level::pad_score(const Point& pos) const {
-  const double dx = pos.x - pad_.x;
-  const double dy = pos.y - pad_.y;
-  const double d = std::sqrt(dx * dx + dy * dy);
-
-  return 1000 * (1 - d / kMaxDistance);
+  const double dx = std::abs(pos.x - pad_.x);
+  const double dy = std::abs(pos.y - pad_.y);
+  return dy < 5 ? 1000 * (1 - dx / kMaxDistance) : 0;
 }
 
 bool Level::intersect(const PolyLine& poly) const {

@@ -11,6 +11,7 @@ class Level {
     Level(const std::string& data);
     void draw(Graphics& graphics, const Rect& viewport) const;
 
+    std::string name() const;
     Point start() const;
     Point pad() const;
     int fuel() const;

@@ -27,12 +27,27 @@ class GameScreen : public Screen {
 
     const double kViewportPadding = 25;
 
+    enum class GameState { INTRO, PLAYING, DEATH, OUTRO };
+    enum class DeathReason { NONE, MISS, CRASH, TIP, LEAVE };
+
+    struct ScoreInfo {
+      int position, angle, velocity, flips, multiplier;
+      int total() const;
+    };
+
     std::unique_ptr<Ship> ship_;
     std::unique_ptr<Text> text_;
     std::unique_ptr<Level> level_;
     int score_, lives_, level_number_, difficulty_;
+    GameState state_;
+    DeathReason reason_;
+    ScoreInfo score_info_;
 
     void load_level();
     Rect viewport() const;
-    bool calculate_score();
+    void handle_crash();
+    void death(Audio& audio);
+    std::string death_reason() const;
+    void info_box(Graphics& graphics, int w, int h, const std::string& title) const;
+    void draw_score_info(Graphics& graphics) const;
 };
