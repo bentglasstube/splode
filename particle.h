@@ -28,9 +28,6 @@ class ParticleEmitter {
 
     void emit(const Point& pos);
 
-    // TODO remove
-    int count() const;
-
   private:
     std::vector<Particle> particles_;
     int color_;

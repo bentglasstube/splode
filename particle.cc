@@ -57,8 +57,3 @@ void ParticleEmitter::draw(Graphics& graphics, const Rect& viewport) const {
 void ParticleEmitter::emit(const Point& pos) {
   particles_.emplace_back(pos, color_);
 }
-
-// TODO remove
-int ParticleEmitter::count() const {
-  return particles_.size();
-}
