@@ -4,7 +4,7 @@
 
 Ship::Ship(const Point& pos, double fuel) :
   x_(pos.x), y_(pos.y), vx_(0), vy_(0), angle_(kUp), fuel_(fuel),
-  engine_(false), thrust_(0), flips_(0) {}
+  engine_(false), thrust_(0), flips_(0), engine_emitter_(0xff0000ff) {}
 
 bool Ship::update(Audio& audio, unsigned int elapsed) {
   double ax = 0;
@@ -16,6 +16,8 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
 
     /* audio.play_sample("thrust.wav"); */
     fuel_ -= elapsed / 1000.0f;
+
+    engine_emitter_.emit({x_, y_});
   }
 
   angle_ += kGravity * kThrustFactor * thrust_;
@@ -38,12 +40,14 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
   x_ += vx_ * elapsed;
   y_ += vy_ * elapsed;
 
+  engine_emitter_.update(elapsed);
+
   return true;
 }
 
 void Ship::draw(Graphics& graphics, const Rect& viewport) const {
-  if (engine_ && fuel_ > 0) engine().draw(graphics, 0xff0000ff, viewport);
   hull().draw(graphics, 0x00ffffff, viewport);
+  engine_emitter_.draw(graphics, viewport);
 }
 
 void Ship::set_engines(bool main, bool left, bool right) {

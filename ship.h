@@ -4,6 +4,7 @@
 #include "graphics.h"
 
 #include "geometry.h"
+#include "particle.h"
 
 class Ship {
   public:
@@ -39,6 +40,7 @@ class Ship {
     double x_, y_, vx_, vy_, angle_, fuel_;
     bool engine_;
     int thrust_, flips_;
+    ParticleEmitter engine_emitter_;
 
     Point coords(double angle, double radius) const;
     PolyLine engine() const;

@@ -34,6 +34,16 @@ cc_library(
 )
 
 cc_library(
+    name = "particle",
+    srcs = ["particle.cc"],
+    hdrs = ["particle.h"],
+    deps = [
+        "@libgam//:graphics",
+        ":geometry",
+    ],
+)
+
+cc_library(
     name = "ship",
     srcs = ["ship.cc"],
     hdrs = ["ship.h"],
@@ -41,6 +51,7 @@ cc_library(
         "@libgam//:audio",
         "@libgam//:graphics",
         ":geometry",
+        ":particle",
     ],
 )
 
