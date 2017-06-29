@@ -15,7 +15,7 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
     ay += kGravity * kEngineFactor * sin(angle_);
 
     /* audio.play_sample("thrust.wav"); */
-    fuel_ -= elapsed / 1000.0f;
+    fuel_ -= elapsed / 500.0f;
 
     engine_emitter_.emit({x_, y_});
   }
