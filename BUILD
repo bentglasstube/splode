@@ -1,20 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "game_screen",
-    srcs = ["game_screen.cc"],
-    hdrs = ["game_screen.h"],
-    deps = [
-        "@libgam//:audio",
-        "@libgam//:graphics",
-        "@libgam//:screen",
-        "@libgam//:text",
-        ":level",
-        ":ship",
-    ],
-)
-
-cc_library(
     name = "geometry",
     srcs = ["geometry.cc"],
     hdrs = ["geometry.h"],
@@ -44,6 +30,27 @@ cc_library(
 )
 
 cc_library(
+    name = "screens",
+    srcs = [
+        "game_screen.cc",
+        "title_screen.cc",
+    ],
+    hdrs = [
+        "game_screen.h",
+        "title_screen.h",
+    ],
+    deps = [
+        "@libgam//:audio",
+        "@libgam//:graphics",
+        "@libgam//:screen",
+        "@libgam//:sprite",
+        "@libgam//:text",
+        ":level",
+        ":ship",
+    ],
+)
+
+cc_library(
     name = "ship",
     srcs = ["ship.cc"],
     hdrs = ["ship.h"],
@@ -68,20 +75,7 @@ cc_binary(
     ],
     srcs = ["main.cc"],
     deps = [
-        ":title_screen",
         "@libgam//:game",
+        ":screens",
     ],
 )
-
-cc_library(
-    name = "title_screen",
-    srcs = ["title_screen.cc"],
-    hdrs = ["title_screen.h"],
-    deps = [
-        "@libgam//:screen",
-        "@libgam//:sprite",
-        "@libgam//:text",
-        ":game_screen",
-    ],
-)
-

@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "geometry.h"
+#include "title_screen.h"
 
 void GameScreen::init() {
   text_.reset(new Text("text.png"));
@@ -121,7 +122,7 @@ void GameScreen::set_difficulty(int difficulty) {
 }
 
 Screen* GameScreen::next_screen() {
-  return nullptr;
+  return new TitleScreen();
 }
 
 void GameScreen::load_level() {
