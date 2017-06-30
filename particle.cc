@@ -2,10 +2,20 @@
 
 #include <cmath>
 
-Particle::Particle(Point pos, int color) :
-  pos_(pos), vel_(0.01, 0.01), length_(3), angle_(0), angle_vel_(0.01),
+Particle::Particle(Point pos, int color, double angle) :
+  pos_(pos), vel_(0, 0), length_(0), angle_(angle), angle_vel_(0),
   color_(color), lifespan_(500), ttl_(lifespan_) {
-  // TODO randomize attributes
+
+  std::uniform_real_distribution<double> r(0, 1);
+
+  angle_ += (r(rand_) - 0.5) / 2;
+  angle_vel_ = (r(rand_) - 0.5) / 50;
+
+  const double vel = (r(rand_) + 1) / 50;
+  vel_.x = vel * std::cos(angle_);
+  vel_.y = vel * std::sin(angle_);
+
+  length_ = r(rand_) + 1;
 }
 
 void Particle::update(unsigned int elapsed) {
@@ -54,6 +64,8 @@ void ParticleEmitter::draw(Graphics& graphics, const Rect& viewport) const {
   }
 }
 
-void ParticleEmitter::emit(const Point& pos) {
-  particles_.emplace_back(pos, color_);
+void ParticleEmitter::emit(const Point& pos, double angle) {
+  particles_.emplace_back(pos, color_, angle);
 }
+
+std::default_random_engine Particle::rand_;
