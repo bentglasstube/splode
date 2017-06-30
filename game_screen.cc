@@ -5,10 +5,11 @@
 #include <sstream>
 
 #include "geometry.h"
-#include "title_screen.h"
+#include "high_score_screen.h"
 
 void GameScreen::init() {
   text_.reset(new Text("text.png"));
+  hull_exploder_.reset(new ParticleEmitter(0x00ffffff));
 
   score_ = 0;
   lives_ = 5;
@@ -18,6 +19,8 @@ void GameScreen::init() {
 }
 
 bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+  hull_exploder_->update(elapsed);
+
   switch (state_) {
     case GameState::INTRO:
       if (input.any_pressed()) state_ = GameState::PLAYING;
@@ -79,7 +82,8 @@ void GameScreen::draw(Graphics& graphics) const {
   const Rect v = viewport();
 
   level_->draw(graphics, v);
-  ship_->draw(graphics, v);
+  if (state_ != GameState::DEATH) ship_->draw(graphics, v);
+  hull_exploder_->draw(graphics, v);
 
   const SDL_Rect fuel = { 8, 24, 8 * ship_->fuel(), 8 };
   graphics.draw_rect(&fuel, 0x000000ff, true);
@@ -122,7 +126,9 @@ void GameScreen::set_difficulty(int difficulty) {
 }
 
 Screen* GameScreen::next_screen() {
-  return new TitleScreen();
+  HighScoreScreen* scores = new HighScoreScreen();
+  scores->set_score(score_);
+  return scores;
 }
 
 void GameScreen::load_level() {
@@ -175,6 +181,11 @@ void GameScreen::death(Audio& audio) {
   state_ = GameState::DEATH;
   audio.play_sample("crash.wav");
   --lives_;
+
+  const PolyLine& hull = ship_->hull();
+  for (int i = 0; i < 200; ++i) {
+    hull_exploder_->emit(hull.point(i % 3), i / 5.0);
+  }
 }
 
 std::string GameScreen::death_reason() const {

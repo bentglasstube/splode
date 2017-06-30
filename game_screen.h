@@ -9,6 +9,7 @@
 #include "text.h"
 
 #include "level.h"
+#include "particle.h"
 #include "ship.h"
 
 class GameScreen : public Screen {
@@ -38,6 +39,7 @@ class GameScreen : public Screen {
     std::unique_ptr<Ship> ship_;
     std::unique_ptr<Text> text_;
     std::unique_ptr<Level> level_;
+    std::unique_ptr<ParticleEmitter> hull_exploder_;
     int score_, lives_, level_number_, difficulty_;
     GameState state_;
     DeathReason reason_;

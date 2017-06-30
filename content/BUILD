@@ -6,6 +6,6 @@ filegroup(
         "*.png",
         "*.wav",
         "*.ogg",
-        "*.terrain",
+        "scores.txt",
     ]),
 )

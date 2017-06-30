@@ -1,6 +1,7 @@
 #include "title_screen.h"
 
 #include "game_screen.h"
+#include "high_score_screen.h"
 
 void TitleScreen::init() {
   text_.reset(new Text("text.png"));
@@ -46,6 +47,8 @@ Screen* TitleScreen::next_screen() {
     GameScreen* s = new GameScreen();
     s->set_difficulty(choice_);
     return s;
+  } else if (choice_ == 3) {
+    return new HighScoreScreen();
   } else {
     return nullptr;
   }

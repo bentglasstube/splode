@@ -33,10 +33,12 @@ cc_library(
     name = "screens",
     srcs = [
         "game_screen.cc",
+        "high_score_screen.cc",
         "title_screen.cc",
     ],
     hdrs = [
         "game_screen.h",
+        "high_score_screen.h",
         "title_screen.h",
     ],
     deps = [
