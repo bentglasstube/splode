@@ -29,15 +29,14 @@ bool TitleScreen::update(const Input& input, Audio&, unsigned int) {
 }
 
 void TitleScreen::draw(Graphics& graphics) const {
-  logo_->draw(graphics, 16, 0);
+  logo_->draw(graphics, (graphics.width() - 480) / 2, 64);
 
   for (int i = 0; i < choices_.size(); ++i) {
-    const int y = 240 + 16 * (i > 2 ? i + 1 : i);
-    text_->draw(graphics, choices_[i], 256, y, Text::Alignment::CENTER);
+    const int y = graphics.height() / 2 + 16 * (i > 2 ? i + 1 : i);
+    text_->draw(graphics, choices_[i], graphics.width() / 2, y, Text::Alignment::CENTER);
 
     if (i == choice_) {
-      text_->draw(graphics, ">", 192, y, Text::Alignment::LEFT);
-      text_->draw(graphics, "<", 312, y, Text::Alignment::LEFT);
+      text_->draw(graphics, ">              <", graphics.width() / 2, y, Text::Alignment::CENTER);
     }
   }
 }
