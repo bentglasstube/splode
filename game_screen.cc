@@ -39,7 +39,11 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
           reason_ = DeathReason::LEAVE;
           death(audio);
         }
-        // TODO handle bottom exit
+
+        if (p.y > 255) {
+          level_number_ = 0;
+          load_level();
+        }
 
         if (level_->intersect(ship_->hull())) {
           handle_crash();
