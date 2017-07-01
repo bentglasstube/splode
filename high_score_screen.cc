@@ -69,7 +69,9 @@ void HighScoreScreen::draw(Graphics& graphics) const {
 
   const int x1 = graphics.width() / 2 - 168;
   const int x2 = graphics.width() / 2 + 200;
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < top_scores_.size(); ++i) {
+    if (i == 10) break;
+
     const int y = graphics.height() / 2 + 16 * i;
     const std::string num = place_ == i ? "> " : std::to_string(i + 1) + ". ";
 

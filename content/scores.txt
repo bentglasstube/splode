@@ -1,10 +1,1 @@
-bentglasstube 1000000
-bentglasstube  500000
-bentglasstube  100000
-bentglasstube   50000
-bentglasstube   10000
-bentglasstube    5000
-bentglasstube    1000
-bentglasstube     500
-bentglasstube     100
-bentglasstube      50
+Tyro 1000000
