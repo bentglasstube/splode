@@ -23,11 +23,8 @@ bool TitleScreen::update(const Input& input, Audio&, unsigned int) {
   const bool up = input.key_pressed(SDL_SCANCODE_W) || input.key_pressed(SDL_SCANCODE_UP);
   const bool down = input.key_pressed(SDL_SCANCODE_S) || input.key_pressed(SDL_SCANCODE_DOWN);
 
-  if (up) --choice_;
-  if (down) ++choice_;
-
-  if (choice_ < 0) choice_ = 0;
-  if (choice_ >= choices_.size()) choice_ = choices_.size() - 1;
+  if (up && choice_ > 0) --choice_;
+  if (down && choice_ < choices_.size() - 1) ++choice_;
 
   if (choose) return false;
 

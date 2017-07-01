@@ -33,7 +33,7 @@ void HighScoreScreen::init() {
   }
 }
 
-bool HighScoreScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+bool HighScoreScreen::update(const Input& input, Audio&, unsigned int) {
   if (entering_name()) {
     std::string& name = top_scores_[place_].name;
 
