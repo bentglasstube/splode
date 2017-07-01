@@ -49,6 +49,7 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
           handle_crash();
           if (reason_ == DeathReason::NONE) {
             state_ = GameState::OUTRO;
+            audio.stop_samples();
             audio.play_sample("land.wav");
             add_points(score_info_.total());
           } else {
@@ -183,6 +184,7 @@ void GameScreen::handle_crash() {
 
 void GameScreen::death(Audio& audio) {
   state_ = GameState::DEATH;
+  audio.stop_samples();
   audio.play_sample("crash.wav");
   --lives_;
 
