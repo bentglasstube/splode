@@ -8,7 +8,7 @@
 void HighScoreScreen::init() {
   text_.reset(new Text("text.png"));
   logo_.reset(new Sprite("title.png", 0, 0, 480, 183));
-  place_ = -1;
+  place_ = 99;
 
   std::ifstream reader("content/scores.txt");
   std::string n;
@@ -19,13 +19,17 @@ void HighScoreScreen::init() {
     reader >> s;
     if (reader.eof()) break;
 
-    if (score_ > s && place_ == -1) {
-      std::cout << "High score: " << place_ << " place\n";
+    if (score_ > s && place_ == 99) {
       place_ = top_scores_.size();
       top_scores_.emplace_back("", score_);
     }
 
     top_scores_.emplace_back(n, s);
+  }
+
+  if (place_ == 99 && score_ > 0) {
+    place_ = top_scores_.size();
+    top_scores_.emplace_back("", score_);
   }
 }
 
@@ -36,7 +40,7 @@ bool HighScoreScreen::update(const Input& input, Audio& audio, unsigned int elap
     if (name.length() > 0) {
       if (input.key_pressed(SDL_SCANCODE_RETURN)) {
         save_scores();
-        place_ = -1;
+        place_ = 99;
       }
       if (input.key_pressed(SDL_SCANCODE_BACKSPACE)) name.pop_back();
     }
@@ -71,7 +75,7 @@ void HighScoreScreen::draw(Graphics& graphics) const {
 
   const int x1 = graphics.width() / 2 - 168;
   const int x2 = graphics.width() / 2 + 200;
-  for (int i = 0; i < top_scores_.size(); ++i) {
+  for (size_t i = 0; i < top_scores_.size(); ++i) {
     if (i == 10) break;
 
     const int y = graphics.height() / 2 + 16 * i;
@@ -96,7 +100,7 @@ void HighScoreScreen::set_score(int score) {
 }
 
 bool HighScoreScreen::entering_name() const {
-  return place_ != -1;
+  return place_ != 99;
 }
 
 void HighScoreScreen::save_scores() const {

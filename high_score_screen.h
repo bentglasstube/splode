@@ -32,7 +32,8 @@ class HighScoreScreen : public Screen {
     std::unique_ptr<Text> text_;
     std::vector<HighScore> top_scores_;
 
-    int score_, place_;
+    int score_;
+    size_t place_;
 
     bool entering_name() const;
     void save_scores() const;
