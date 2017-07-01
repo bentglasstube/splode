@@ -89,7 +89,7 @@ void GameScreen::draw(Graphics& graphics) const {
   if (state_ != GameState::DEATH) ship_->draw(graphics, v);
   hull_exploder_->draw(graphics, v);
 
-  const SDL_Rect fuel = { 8, 24, 8 * ship_->fuel(), 8 };
+  const SDL_Rect fuel = { 8, 24, (int)(8 * ship_->fuel()), 8 };
   graphics.draw_rect(&fuel, 0x000000ff, true);
   graphics.draw_rect(&fuel, 0xffff00ff, false);
 
@@ -200,6 +200,8 @@ std::string GameScreen::death_reason() const {
     case DeathReason::TIP: return "You landed too crooked.";
     case DeathReason::LEAVE: return "You flew out of bounds.";
   }
+
+  return "";
 }
 
 void GameScreen::info_box(Graphics& graphics, int w, int h, const std::string& title) const {

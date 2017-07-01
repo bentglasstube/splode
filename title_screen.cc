@@ -25,6 +25,12 @@ bool TitleScreen::update(const Input& input, Audio&, unsigned int) {
   if (choice_ >= choices_.size()) choice_ = choices_.size() - 1;
 
   if (input.key_pressed(SDL_SCANCODE_RETURN)) return false;
+  if (input.key_pressed(SDL_SCANCODE_SPACE)) return false;
+
+  if (input.key_pressed(SDL_SCANCODE_ESCAPE)) {
+    choice_ = 4;
+    return false;
+  }
 
   return true;
 }
@@ -32,7 +38,7 @@ bool TitleScreen::update(const Input& input, Audio&, unsigned int) {
 void TitleScreen::draw(Graphics& graphics) const {
   logo_->draw(graphics, (graphics.width() - 480) / 2, 64);
 
-  for (int i = 0; i < choices_.size(); ++i) {
+  for (size_t i = 0; i < choices_.size(); ++i) {
     const int y = graphics.height() / 2 + 16 * (i > 2 ? i + 1 : i);
     text_->draw(graphics, choices_[i], graphics.width() / 2, y, Text::Alignment::CENTER);
 

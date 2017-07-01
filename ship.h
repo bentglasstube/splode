@@ -35,7 +35,7 @@ class Ship {
     static constexpr double kUp = -kPi / 2;
 
     static constexpr double kMaxAngle = 3 * kPi / 32;
-    static constexpr double kMaxVelocity = 0.02;
+    static constexpr double kMaxVelocity = 0.025;
 
     double x_, y_, vx_, vy_, angle_, fuel_;
     bool engine_;

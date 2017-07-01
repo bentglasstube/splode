@@ -41,7 +41,7 @@ void PolyLine::draw(Graphics& graphics, int color, const Rect& viewport) const {
 }
 
 int orientation(Point p, Point q, Point r) {
-  const int v = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+  const double v = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
   if (v == 0) return 0;
   return v > 0 ? 1 : 2;
 }
@@ -52,7 +52,6 @@ bool lines_intersect(Point p, Point q, Point r, Point s) {
   int o3 = orientation(r, s, p);
   int o4 = orientation(r, s, q);
 
-  // TODO handle colinearity
   return o1 != o2 && o3 != o4;
 }
 

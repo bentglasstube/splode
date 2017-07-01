@@ -26,5 +26,5 @@ class TitleScreen : public Screen {
     std::unique_ptr<Sprite> logo_;
 
     std::vector<std::string> choices_;
-    int choice_;
+    size_t choice_;
 };

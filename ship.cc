@@ -14,7 +14,7 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
     ax += kGravity * kEngineFactor * cos(angle_);
     ay += kGravity * kEngineFactor * sin(angle_);
 
-    /* audio.play_sample("thrust.wav"); */
+    audio.play_sample("thrust.wav");
     fuel_ -= elapsed / 500.0f;
 
     engine_emitter_.emit({x_, y_ }, angle_ + kPi);
@@ -34,8 +34,6 @@ bool Ship::update(Audio& audio, unsigned int elapsed) {
 
   vx_ += ax * elapsed;
   vy_ += ay * elapsed;
-
-  // TODO set cap on velocity
 
   x_ += vx_ * elapsed;
   y_ += vy_ * elapsed;
