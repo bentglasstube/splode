@@ -18,16 +18,20 @@ void TitleScreen::init() {
 }
 
 bool TitleScreen::update(const Input& input, Audio&, unsigned int) {
-  if (input.key_pressed(SDL_SCANCODE_W)) --choice_;
-  if (input.key_pressed(SDL_SCANCODE_S)) ++choice_;
+  const bool quit = input.key_pressed(SDL_SCANCODE_ESCAPE);
+  const bool choose = input.key_pressed(SDL_SCANCODE_SPACE) || input.key_pressed(SDL_SCANCODE_RETURN);
+  const bool up = input.key_pressed(SDL_SCANCODE_W) || input.key_pressed(SDL_SCANCODE_UP);
+  const bool down = input.key_pressed(SDL_SCANCODE_S) || input.key_pressed(SDL_SCANCODE_DOWN);
+
+  if (up) --choice_;
+  if (down) ++choice_;
 
   if (choice_ < 0) choice_ = 0;
   if (choice_ >= choices_.size()) choice_ = choices_.size() - 1;
 
-  if (input.key_pressed(SDL_SCANCODE_RETURN)) return false;
-  if (input.key_pressed(SDL_SCANCODE_SPACE)) return false;
+  if (choose) return false;
 
-  if (input.key_pressed(SDL_SCANCODE_ESCAPE)) {
+  if (quit) {
     choice_ = 4;
     return false;
   }

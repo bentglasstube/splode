@@ -19,19 +19,23 @@ void GameScreen::init() {
 }
 
 bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+  const bool next = input.key_pressed(SDL_SCANCODE_SPACE) ||
+    input.key_pressed(SDL_SCANCODE_RETURN) ||
+    input.key_pressed(SDL_SCANCODE_ESCAPE);
+  const bool up = input.key_held(SDL_SCANCODE_W) || input.key_held(SDL_SCANCODE_UP);
+  const bool left = input.key_held(SDL_SCANCODE_A) || input.key_held(SDL_SCANCODE_LEFT);
+  const bool right = input.key_held(SDL_SCANCODE_D) || input.key_held(SDL_SCANCODE_RIGHT);
+
   hull_exploder_->update(elapsed);
 
   switch (state_) {
     case GameState::INTRO:
-      if (input.any_pressed()) state_ = GameState::PLAYING;
+      if (next) state_ = GameState::PLAYING;
       break;
 
     case GameState::PLAYING:
       {
-        ship_->set_engines(
-            input.key_held(SDL_SCANCODE_W),
-            input.key_held(SDL_SCANCODE_A),
-            input.key_held(SDL_SCANCODE_D));
+        ship_->set_engines(up, left, right);
         ship_->update(audio, elapsed * (difficulty_ + 1) / 2);
 
         const Point p = ship_->position();
@@ -61,7 +65,7 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
       break;
 
     case GameState::DEATH:
-      if (input.any_pressed()) {
+      if (next) {
         if (lives_ > 0) {
           load_level();
         } else {
@@ -72,7 +76,7 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
       break;
 
     case GameState::OUTRO:
-      if (input.any_pressed()) {
+      if (next) {
         if (level_number_ > 0) ++level_number_;
         if (level_number_ > 20) return false;
         load_level();

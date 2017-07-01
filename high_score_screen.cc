@@ -54,6 +54,8 @@ bool HighScoreScreen::update(const Input& input, Audio& audio, unsigned int elap
 
   } else {
     if (input.key_pressed(SDL_SCANCODE_SPACE)) return false;
+    if (input.key_pressed(SDL_SCANCODE_RETURN)) return false;
+    if (input.key_pressed(SDL_SCANCODE_ESCAPE)) return false;
   }
 
   return true;
