@@ -1,4 +1,5 @@
 bazel-*
 build/
 splode-*.zip
+splode-*.tgz
 *.app
