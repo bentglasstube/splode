@@ -1,5 +1,14 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@mxebzl//tools/windows:rules.bzl", "pkg_winzip")
+
+config_setting(
+    name = "windows",
+    values = {
+        "crosstool_top": "@mxebzl//tools/windows:toolchain",
+    }
+)
+
 cc_library(
     name = "geometry",
     srcs = ["geometry.cc"],
@@ -67,7 +76,10 @@ cc_library(
 cc_binary(
     name = "splode",
     data = ["//content"],
-    linkopts = [
+    linkopts = select({
+        ":windows": [ "-mwindows", "-lSDL2main" ],
+        "//conditions:default": [],
+    }) + [
         "-lSDL2",
         "-lSDL2_image",
         "-lSDL2_mixer",
@@ -80,4 +92,12 @@ cc_binary(
         "@libgam//:game",
         ":screens",
     ],
+)
+
+pkg_winzip(
+    name = "splode-windows",
+    files = [
+        ":splode",
+        "//content",
+    ]
 )
