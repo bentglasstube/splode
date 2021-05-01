@@ -15,12 +15,11 @@
 class GameScreen : public Screen {
   public:
 
-    void init() override;
+    GameScreen(int difficulty, int level);
+
     bool update(const Input& input, Audio& audio, unsigned int elapsed) override;
     void draw(Graphics& graphics) const override;
     std::string get_music_track() const override;
-
-    void set_difficulty(int difficulty);
 
     Screen* next_screen() const override;
 
@@ -36,11 +35,12 @@ class GameScreen : public Screen {
       int total() const;
     };
 
-    std::unique_ptr<Ship> ship_;
-    std::unique_ptr<Text> text_;
-    std::unique_ptr<Level> level_;
-    std::unique_ptr<ParticleEmitter> hull_exploder_;
     int score_, lives_, level_number_, difficulty_;
+    Level level_;
+    Ship ship_;
+    Text text_;
+    ParticleEmitter hull_exploder_;
+
     GameState state_;
     DeathReason reason_;
     ScoreInfo score_info_;

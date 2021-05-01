@@ -15,6 +15,7 @@ class Ship {
     bool update(Audio& audio, unsigned int elapsed);
     void draw(Graphics& graphics, const Rect& viewport) const;
 
+    void setup(Point pos, double fuel);
     void set_engines(bool main, bool left, bool right);
 
     double fuel() const;
@@ -24,6 +25,7 @@ class Ship {
     int velocity_score() const;
     int angle_score() const;
     int flips() const;
+
 
   private:
 

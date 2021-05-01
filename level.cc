@@ -2,7 +2,13 @@
 
 #include <cmath>
 
-Level::Level(const std::string& data) : name_(""), fuel_(0), start_(0, 0), pad_(0, 0), terrain_() {
+Level::Level(const std::string& data) :
+  name_(""), fuel_(0), start_(0, 0), pad_(0, 0), terrain_()
+{
+  load(data);
+}
+
+void Level::load(const std::string& data) {
   name_ = data.substr(1, (unsigned char) data.at(0));
   size_t offset = (unsigned char) data.at(0) + 1;
 
@@ -29,7 +35,6 @@ void Level::draw(Graphics& graphics, const Rect& viewport) const {
   for (const auto& p : terrain_) {
     p.draw(graphics, 0x00ff00ff, viewport);
   }
-
   pad_rect().draw(graphics, 0xffffffff, viewport);
 }
 

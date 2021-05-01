@@ -5,10 +5,11 @@
 
 #include "title_screen.h"
 
-void HighScoreScreen::init() {
-  text_.reset(new Text("text.png"));
-  logo_.reset(new Sprite("title.png", 0, 0, 480, 183));
-  place_ = 99;
+HighScoreScreen::HighScoreScreen(int score) :
+  text_("text.png"),
+  logo_("title.png", 0, 0, 480, 183),
+  place_(99), score_(score)
+{
 
   std::ifstream reader("content/scores.txt");
   std::string n;
@@ -55,13 +56,13 @@ bool HighScoreScreen::update(const Input& input, Audio&, unsigned int) {
 }
 
 void HighScoreScreen::draw(Graphics& graphics) const {
-  logo_->draw(graphics, (graphics.width() - 480) / 2, 64);
+  logo_.draw(graphics, (graphics.width() - 480) / 2, 64);
 
   if (entering_name()) {
-    text_->draw(graphics, "Congratulations!  You got enough points to be", graphics.width() / 2, graphics.height() / 2 - 64, Text::Alignment::Center);
-    text_->draw(graphics, "on the leaderboard.  Enter your name below.", graphics.width() / 2, graphics.height() / 2 - 48, Text::Alignment::Center);
+    text_.draw(graphics, "Congratulations!  You got enough points to be", graphics.width() / 2, graphics.height() / 2 - 64, Text::Alignment::Center);
+    text_.draw(graphics, "on the leaderboard.  Enter your name below.", graphics.width() / 2, graphics.height() / 2 - 48, Text::Alignment::Center);
 
-    text_->draw(graphics, "Shit, I broke this part, sorry :(", graphics.width() / 2, graphics.height() / 2 + 128, Text::Alignment::Center);
+    text_.draw(graphics, "Shit, I broke this part, sorry :(", graphics.width() / 2, graphics.height() / 2 + 128, Text::Alignment::Center);
   }
 
   const int x1 = graphics.width() / 2 - 168;
@@ -72,9 +73,9 @@ void HighScoreScreen::draw(Graphics& graphics) const {
     const int y = graphics.height() / 2 + 16 * i;
     const std::string num = place_ == i ? "> " : std::to_string(i + 1) + ". ";
 
-    text_->draw(graphics, top_scores_[i].name, x1, y, Text::Alignment::Left);
-    text_->draw(graphics, std::to_string(top_scores_[i].score), x2, y, Text::Alignment::Right);
-    text_->draw(graphics, num, x1, y, Text::Alignment::Right);
+    text_.draw(graphics, top_scores_[i].name, x1, y, Text::Alignment::Left);
+    text_.draw(graphics, std::to_string(top_scores_[i].score), x2, y, Text::Alignment::Right);
+    text_.draw(graphics, num, x1, y, Text::Alignment::Right);
   }
 }
 
@@ -84,10 +85,6 @@ Screen* HighScoreScreen::next_screen() const {
 
 std::string HighScoreScreen::get_music_track() const {
   return "scores.ogg";
-}
-
-void HighScoreScreen::set_score(int score) {
-  score_ = score;
 }
 
 bool HighScoreScreen::entering_name() const {
