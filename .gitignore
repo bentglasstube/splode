@@ -1,5 +1,12 @@
 bazel-*
-build/
-splode-*.zip
-splode-*.tgz
-*.app
+/*.zip
+/*.dmg
+/*.app
+/*.AppImage
+/*.AppDir
+/*.data
+/*.html
+/*.js
+/*.wasm
+/*-web-*/
+*output/

@@ -19,12 +19,10 @@ void GameScreen::init() {
 }
 
 bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
-  const bool next = input.key_pressed(SDL_SCANCODE_SPACE) ||
-    input.key_pressed(SDL_SCANCODE_RETURN) ||
-    input.key_pressed(SDL_SCANCODE_ESCAPE);
-  const bool up = input.key_held(SDL_SCANCODE_W) || input.key_held(SDL_SCANCODE_UP);
-  const bool left = input.key_held(SDL_SCANCODE_A) || input.key_held(SDL_SCANCODE_LEFT);
-  const bool right = input.key_held(SDL_SCANCODE_D) || input.key_held(SDL_SCANCODE_RIGHT);
+  const bool next = input.key_pressed(Input::Button::A) || input.key_pressed(Input::Button::Start);
+  const bool up = input.key_held(Input::Button::Up);
+  const bool left = input.key_held(Input::Button::Left);
+  const bool right = input.key_held(Input::Button::Right);
 
   hull_exploder_->update(elapsed);
 
@@ -102,7 +100,7 @@ void GameScreen::draw(Graphics& graphics) const {
   graphics.draw_rect(&border, 0x00ff00ff, false);
 
   text_->draw(graphics, std::to_string(score_), 8, 8);
-  text_->draw(graphics, "Ships: " + std::to_string(lives_), graphics.width() - 8, 8, Text::Alignment::RIGHT);
+  text_->draw(graphics, "Ships: " + std::to_string(lives_), graphics.width() - 8, 8, Text::Alignment::Right);
 
   switch (state_) {
     case GameState::INTRO:
@@ -112,7 +110,7 @@ void GameScreen::draw(Graphics& graphics) const {
     case GameState::DEATH:
 
       info_box(graphics, 250, 64, "Your head a splode!");
-      text_->draw(graphics, death_reason(), graphics.width() / 2, graphics.height() / 2 + 8, Text::Alignment::CENTER);
+      text_->draw(graphics, death_reason(), graphics.width() / 2, graphics.height() / 2 + 8, Text::Alignment::Center);
       break;
 
     case GameState::OUTRO:
@@ -134,7 +132,7 @@ void GameScreen::set_difficulty(int difficulty) {
   difficulty_ = difficulty;
 }
 
-Screen* GameScreen::next_screen() {
+Screen* GameScreen::next_screen() const {
   HighScoreScreen* scores = new HighScoreScreen();
   scores->set_score(score_);
   return scores;
@@ -215,7 +213,7 @@ void GameScreen::info_box(Graphics& graphics, int w, int h, const std::string& t
   graphics.draw_rect(&r, 0x000000ff, true);
   graphics.draw_rect(&r, 0xffffffff, false);
 
-  text_->draw(graphics, title, graphics.width() / 2, r.y + 8, Text::Alignment::CENTER);
+  text_->draw(graphics, title, graphics.width() / 2, r.y + 8, Text::Alignment::Center);
 }
 
 void GameScreen::draw_score_info(Graphics& graphics) const {
@@ -229,11 +227,11 @@ void GameScreen::draw_score_info(Graphics& graphics) const {
   text_->draw(graphics, "Flips", l, y + 48);
   text_->draw(graphics, "Difficulty", l, y + 64);
 
-  text_->draw(graphics, std::to_string(score_info_.position), r, y, Text::Alignment::RIGHT);
-  text_->draw(graphics, std::to_string(score_info_.velocity), r, y + 16, Text::Alignment::RIGHT);
-  text_->draw(graphics, std::to_string(score_info_.angle), r, y + 32, Text::Alignment::RIGHT);
-  text_->draw(graphics, std::to_string(score_info_.flips), r, y + 48, Text::Alignment::RIGHT);
-  text_->draw(graphics, "x" + std::to_string(score_info_.multiplier), r, y + 64, Text::Alignment::RIGHT);
+  text_->draw(graphics, std::to_string(score_info_.position), r, y, Text::Alignment::Right);
+  text_->draw(graphics, std::to_string(score_info_.velocity), r, y + 16, Text::Alignment::Right);
+  text_->draw(graphics, std::to_string(score_info_.angle), r, y + 32, Text::Alignment::Right);
+  text_->draw(graphics, std::to_string(score_info_.flips), r, y + 48, Text::Alignment::Right);
+  text_->draw(graphics, "x" + std::to_string(score_info_.multiplier), r, y + 64, Text::Alignment::Right);
 }
 
 void GameScreen::add_points(int points) {

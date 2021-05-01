@@ -18,7 +18,7 @@ class TitleScreen : public Screen {
     void draw(Graphics& graphics) const override;
     std::string get_music_track() const override;
 
-    Screen* next_screen() override;
+    Screen* next_screen() const override;
 
   private:
 

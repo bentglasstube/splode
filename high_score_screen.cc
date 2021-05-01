@@ -37,29 +37,18 @@ bool HighScoreScreen::update(const Input& input, Audio&, unsigned int) {
   if (entering_name()) {
     std::string& name = top_scores_[place_].name;
 
+    // TODO text entry
     if (name.length() > 0) {
-      if (input.key_pressed(SDL_SCANCODE_RETURN)) {
+      if (input.key_pressed(Input::Button::Start)) {
         save_scores();
         place_ = 99;
       }
-      if (input.key_pressed(SDL_SCANCODE_BACKSPACE)) name.pop_back();
-    }
-
-    bool shift = input.key_held(SDL_SCANCODE_LSHIFT) || input.key_held(SDL_SCANCODE_RSHIFT);
-    for (const SDL_Scancode scancode : input.all_pressed()) {
-      SDL_Keycode k = SDL_GetKeyFromScancode(scancode);
-      if (k >= SDLK_a && k <= SDLK_z) {
-        name += (shift ? 'A' : 'a') + (k - SDLK_a);
-      } else if (k >= SDLK_0 && k <= SDLK_9 && !shift) {
-        name += '0' + k - SDLK_0;
-      }
-      // TODO handle symbols and shit
+      if (input.key_pressed(Input::Button::B)) name.pop_back();
     }
 
   } else {
-    if (input.key_pressed(SDL_SCANCODE_SPACE)) return false;
-    if (input.key_pressed(SDL_SCANCODE_RETURN)) return false;
-    if (input.key_pressed(SDL_SCANCODE_ESCAPE)) return false;
+    if (input.key_pressed(Input::Button::A)) return false;
+    if (input.key_pressed(Input::Button::Start)) return false;
   }
 
   return true;
@@ -69,8 +58,8 @@ void HighScoreScreen::draw(Graphics& graphics) const {
   logo_->draw(graphics, (graphics.width() - 480) / 2, 64);
 
   if (entering_name()) {
-    text_->draw(graphics, "Congratulations!  You got enough points to be", graphics.width() / 2, graphics.height() / 2 - 64, Text::Alignment::CENTER);
-    text_->draw(graphics, "on the leaderboard.  Enter your name below.", graphics.width() / 2, graphics.height() / 2 - 48, Text::Alignment::CENTER);
+    text_->draw(graphics, "Congratulations!  You got enough points to be", graphics.width() / 2, graphics.height() / 2 - 64, Text::Alignment::Center);
+    text_->draw(graphics, "on the leaderboard.  Enter your name below.", graphics.width() / 2, graphics.height() / 2 - 48, Text::Alignment::Center);
   }
 
   const int x1 = graphics.width() / 2 - 168;
@@ -81,13 +70,13 @@ void HighScoreScreen::draw(Graphics& graphics) const {
     const int y = graphics.height() / 2 + 16 * i;
     const std::string num = place_ == i ? "> " : std::to_string(i + 1) + ". ";
 
-    text_->draw(graphics, top_scores_[i].name, x1, y, Text::Alignment::LEFT);
-    text_->draw(graphics, std::to_string(top_scores_[i].score), x2, y, Text::Alignment::RIGHT);
-    text_->draw(graphics, num, x1, y, Text::Alignment::RIGHT);
+    text_->draw(graphics, top_scores_[i].name, x1, y, Text::Alignment::Left);
+    text_->draw(graphics, std::to_string(top_scores_[i].score), x2, y, Text::Alignment::Right);
+    text_->draw(graphics, num, x1, y, Text::Alignment::Right);
   }
 }
 
-Screen* HighScoreScreen::next_screen() {
+Screen* HighScoreScreen::next_screen() const {
   return new TitleScreen();
 }
 

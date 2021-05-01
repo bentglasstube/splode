@@ -18,22 +18,14 @@ void TitleScreen::init() {
 }
 
 bool TitleScreen::update(const Input& input, Audio&, unsigned int) {
-  const bool quit = input.key_pressed(SDL_SCANCODE_ESCAPE);
-  const bool choose = input.key_pressed(SDL_SCANCODE_SPACE) || input.key_pressed(SDL_SCANCODE_RETURN);
-  const bool up = input.key_pressed(SDL_SCANCODE_W) || input.key_pressed(SDL_SCANCODE_UP);
-  const bool down = input.key_pressed(SDL_SCANCODE_S) || input.key_pressed(SDL_SCANCODE_DOWN);
+  const bool choose = input.key_pressed(Input::Button::A) || input.key_pressed(Input::Button::Start);
+  const bool up = input.key_pressed(Input::Button::Up);
+  const bool down = input.key_pressed(Input::Button::Down);
 
   if (up && choice_ > 0) --choice_;
   if (down && choice_ < choices_.size() - 1) ++choice_;
 
-  if (choose) return false;
-
-  if (quit) {
-    choice_ = 4;
-    return false;
-  }
-
-  return true;
+  return !choose;
 }
 
 void TitleScreen::draw(Graphics& graphics) const {
@@ -41,15 +33,15 @@ void TitleScreen::draw(Graphics& graphics) const {
 
   for (size_t i = 0; i < choices_.size(); ++i) {
     const int y = graphics.height() / 2 + 16 * (i > 2 ? i + 1 : i);
-    text_->draw(graphics, choices_[i], graphics.width() / 2, y, Text::Alignment::CENTER);
+    text_->draw(graphics, choices_[i], graphics.width() / 2, y, Text::Alignment::Center);
 
     if (i == choice_) {
-      text_->draw(graphics, ">              <", graphics.width() / 2, y, Text::Alignment::CENTER);
+      text_->draw(graphics, ">              <", graphics.width() / 2, y, Text::Alignment::Center);
     }
   }
 }
 
-Screen* TitleScreen::next_screen() {
+Screen* TitleScreen::next_screen() const {
   if (choice_ < 3) {
     GameScreen* s = new GameScreen();
     s->set_difficulty(choice_);

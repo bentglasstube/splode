@@ -22,7 +22,7 @@ class GameScreen : public Screen {
 
     void set_difficulty(int difficulty);
 
-    Screen* next_screen() override;
+    Screen* next_screen() const override;
 
   private:
 

@@ -1,15 +1,5 @@
 package(default_visibility = ["//visibility:public"])
 
-load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
-load("@mxebzl//tools/windows:rules.bzl", "pkg_winzip")
-
-config_setting(
-    name = "windows",
-    values = {
-        "crosstool_top": "@mxebzl//tools/windows:toolchain",
-    }
-)
-
 cc_library(
     name = "geometry",
     srcs = ["geometry.cc"],
@@ -23,16 +13,6 @@ cc_library(
     name = "level",
     srcs = ["level.cc"],
     hdrs = ["level.h"],
-    deps = [
-        "@libgam//:graphics",
-        ":geometry",
-    ],
-)
-
-cc_library(
-    name = "particle",
-    srcs = ["particle.cc"],
-    hdrs = ["particle.h"],
     deps = [
         "@libgam//:graphics",
         ":geometry",
@@ -69,22 +49,28 @@ cc_library(
     deps = [
         "@libgam//:audio",
         "@libgam//:graphics",
-        ":geometry",
         ":particle",
+        ":geometry",
+    ],
+)
+
+cc_library(
+    name = "particle",
+    srcs = ["particle.cc"],
+    hdrs = ["particle.h"],
+    deps = [
+        "@libgam//:graphics",
+        ":geometry",
     ],
 )
 
 cc_binary(
     name = "splode",
     data = ["//content"],
-    linkopts = select({
-        ":windows": [ "-mwindows", "-lSDL2main" ],
-        "//conditions:default": [],
-    }) + [
+    linkopts = [
         "-lSDL2",
         "-lSDL2_image",
         "-lSDL2_mixer",
-        "-lSDL2_ttf",
         "-static-libstdc++",
         "-static-libgcc",
     ],
@@ -92,22 +78,5 @@ cc_binary(
     deps = [
         "@libgam//:game",
         ":screens",
-    ],
-)
-
-pkg_winzip(
-    name = "splode-windows",
-    files = [
-        ":splode",
-        "//content",
-    ]
-)
-
-pkg_tar(
-    name = "splode-linux",
-    extension = "tgz",
-    files = [
-        ":splode",
-        "//content",
     ],
 )

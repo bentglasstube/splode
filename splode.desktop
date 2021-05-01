@@ -1,0 +1,9 @@
+[Desktop Entry]
+
+Type=Application
+Version=1.0
+Name=Splode
+Terminal=false
+Icon=icon
+Exec=splode
+Categories=Game;
