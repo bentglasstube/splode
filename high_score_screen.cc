@@ -38,13 +38,13 @@ bool HighScoreScreen::update(const Input& input, Audio&, unsigned int) {
     std::string& name = top_scores_[place_].name;
 
     // TODO text entry
-    if (name.length() > 0) {
+    // if (name.length() > 0) {
       if (input.key_pressed(Input::Button::Start)) {
         save_scores();
         place_ = 99;
       }
       if (input.key_pressed(Input::Button::B)) name.pop_back();
-    }
+    // }
 
   } else {
     if (input.key_pressed(Input::Button::A)) return false;
@@ -60,6 +60,8 @@ void HighScoreScreen::draw(Graphics& graphics) const {
   if (entering_name()) {
     text_->draw(graphics, "Congratulations!  You got enough points to be", graphics.width() / 2, graphics.height() / 2 - 64, Text::Alignment::Center);
     text_->draw(graphics, "on the leaderboard.  Enter your name below.", graphics.width() / 2, graphics.height() / 2 - 48, Text::Alignment::Center);
+
+    text_->draw(graphics, "Shit, I broke this part, sorry :(", graphics.width() / 2, graphics.height() / 2 + 128, Text::Alignment::Center);
   }
 
   const int x1 = graphics.width() / 2 - 168;
