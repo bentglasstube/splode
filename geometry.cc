@@ -36,7 +36,7 @@ void PolyLine::draw(Graphics& graphics, int color, const Rect& viewport) const {
     x2 = (x2 - viewport.x) / (double) viewport.w * graphics.width();
     y2 = (y2 - viewport.y) / (double) viewport.h * graphics.height();
 
-    graphics.draw_line({x1, y1}, {x2, y2}, color);
+    graphics.draw_line({(int)x1, (int)y1}, {(int)x2, (int)y2}, color);
   }
 }
 

@@ -3,7 +3,7 @@ ifeq ($(UNAME), Windows)
 	CROSS=x86_64-w64-mingw32.static-
 endif
 
-SOURCES=$(wildcard *.cc) $(filter-out gam/particle.cc, $(wildcard gam/*.cc))
+SOURCES=$(wildcard *.cc) $(filter-out gam/particle.cc gam/rect.cc, $(wildcard gam/*.cc))
 CONTENT=$(wildcard content/*)
 ICONS=icon.png
 BUILDDIR=$(CROSS)output
