@@ -5,11 +5,11 @@
     <key>CFBundleExecutable</key>
     <string>launcher</string>
     <key>CFBundleIdentifier</key>
-    <string>org.eatabrick.ld48</string>
+    <string>org.eatabrick.splode</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>Soil Surfer</string>
+    <string>Splode</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
   </dict>
