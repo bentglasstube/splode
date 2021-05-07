@@ -48,15 +48,6 @@ void Ship::draw(Graphics& graphics, const Rect& viewport) const {
   engine_emitter_.draw(graphics, viewport);
 }
 
-void Ship::setup(Point pos, double fuel) {
-  x_ = pos.x;
-  y_ = pos.y;
-  vx_ = 0;
-  vy_ = 0;
-  angle_ = kUp;
-  fuel_ = fuel;
-}
-
 void Ship::set_engines(bool main, bool left, bool right) {
   engine_ = main;
   thrust_ = 0 + (left ? -1 : 0) + (right ? 1 : 0);

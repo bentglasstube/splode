@@ -9,7 +9,6 @@
 class Level {
   public:
     Level(const std::string& data);
-    void load(const std::string& data);
     void draw(Graphics& graphics, const Rect& viewport) const;
 
     std::string name() const;

@@ -13,8 +13,7 @@
 class TitleScreen : public Screen {
   public:
 
-    TitleScreen();
-
+    void init() override;
     bool update(const Input& input, Audio& audio, unsigned int elapsed) override;
     void draw(Graphics& graphics) const override;
     std::string get_music_track() const override;
@@ -23,8 +22,8 @@ class TitleScreen : public Screen {
 
   private:
 
-    Text text_;
-    Sprite logo_;
+    std::unique_ptr<Text> text_;
+    std::unique_ptr<Sprite> logo_;
 
     std::vector<std::string> choices_;
     size_t choice_;

@@ -37,7 +37,7 @@ void Particle::draw(Graphics& graphics, const Rect& viewport) const {
 
   const int alpha = 255 * ttl_ / lifespan_;
 
-  graphics.draw_line({(int)x1, (int)y1}, {(int)x2, (int)y2}, (color_ & 0xffffff00) | alpha);
+  graphics.draw_line((int)x1, (int)y1, (int)x2, (int)y2, (color_ & 0xffffff00) | alpha);
 }
 
 bool Particle::dead() const {

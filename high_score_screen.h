@@ -12,12 +12,13 @@
 class HighScoreScreen : public Screen {
   public:
 
-    HighScoreScreen(int score);
-
+    void init() override;
     bool update(const Input& input, Audio& audio, unsigned int elapsed) override;
     void draw(Graphics& graphics) const override;
     Screen* next_screen() const override;
     std::string get_music_track() const override;
+
+    void set_score(int score);
 
   private:
 
@@ -27,12 +28,12 @@ class HighScoreScreen : public Screen {
       int score;
     };
 
-    Text text_;
-    Sprite logo_;
-    size_t place_;
-    int score_;
-
+    std::unique_ptr<Sprite> logo_;
+    std::unique_ptr<Text> text_;
     std::vector<HighScore> top_scores_;
+
+    int score_;
+    size_t place_;
 
     bool entering_name() const;
     void save_scores() const;
