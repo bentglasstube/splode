@@ -2,6 +2,14 @@
 
 #include "title_screen.h"
 
+#ifdef __EMSCRIPTEN__
+#include "emscripten.h"
+
+void step(void* game) {
+  static_cast<Game*>(game)->step();
+}
+#endif
+
 int main(int, char**) {
   Game::Config config;
 
@@ -10,10 +18,15 @@ int main(int, char**) {
   config.graphics.height = 800;
   config.graphics.fullscreen = false;
 
-  TitleScreen *s = new TitleScreen();
-
   Game game(config);
-  game.loop(s);
+  Screen *start = new TitleScreen();
+
+#ifdef __EMSCRIPTEN__
+  game.start(start);
+  emscripten_set_main_loop_arg(step, &game, 0, true);
+#else
+  game.loop(start);
+#endif
 
   return 0;
 }
